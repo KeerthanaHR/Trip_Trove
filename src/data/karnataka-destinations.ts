@@ -141,6 +141,90 @@ export const destinations: Destination[] = [
       "Gopalaswamy Betta"
     ],
     nearbyDestinations: ["mysore", "wayanad"]
+  },
+  {
+    id: "jog-falls",
+    name: "Jog Falls",
+    description: "Jog Falls, created by the Sharavathi River, is the second-highest plunge waterfall in India. Located in the Western Ghats, these segmented falls drop 253 meters (830 feet) in four distinct cascades known locally as Raja, Rani, Rover, and Rocket. During the monsoon season, the falls are at their most spectacular as water thunders down into the valley below.",
+    shortDescription: "India's second-highest plunge waterfall with four magnificent cascades in the Western Ghats.",
+    image: "https://images.unsplash.com/photo-1629995233566-9aaf7a137200?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8am9nJTIwZmFsbHN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 14.2236,
+      lng: 74.7933
+    },
+    category: ["Waterfall", "Nature", "Photography"],
+    bestTimeToVisit: "July to October",
+    thingsToSee: [
+      "The Four Cascades",
+      "Sharavathi Valley",
+      "Linganamakki Dam",
+      "Watkins Platform",
+      "Jog Falls View Point"
+    ],
+    nearbyDestinations: ["gokarna", "murdeshwar"]
+  },
+  {
+    id: "chikmagalur",
+    name: "Chikmagalur",
+    description: "Chikmagalur is a hill station in Karnataka, known for its coffee plantations, lush forests, and mountain views. Located in the foothills of the Mullayanagiri range, it's often called the 'Coffee Land of Karnataka' as it was the place where coffee was first cultivated in India. The region offers pristine trekking routes, wildlife sanctuaries, and a pleasant climate year-round.",
+    shortDescription: "Coffee-growing hill station with lush plantations, mountain peaks, and adventure opportunities.",
+    image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hpa21hZ2FsdXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 13.3161,
+      lng: 75.7720
+    },
+    category: ["Hill Station", "Nature", "Adventure"],
+    bestTimeToVisit: "September to May",
+    thingsToSee: [
+      "Mullayanagiri Peak",
+      "Baba Budangiri",
+      "Hebbe Falls",
+      "Coffee Plantations",
+      "Kudremukh National Park"
+    ],
+    nearbyDestinations: ["coorg", "shimoga"]
+  },
+  {
+    id: "murudeshwar",
+    name: "Murudeshwar",
+    description: "Murudeshwar is a coastal town famous for housing the world's second-tallest Shiva statue (123 feet) overlooking the Arabian Sea. The town is centered around the Murudeshwar Temple which sits on a hill surrounded by the sea on three sides. The combination of religious significance, spectacular architecture, and beautiful beaches makes it a popular destination.",
+    shortDescription: "Coastal temple town with the world's second-tallest Shiva statue overlooking the Arabian Sea.",
+    image: "https://images.unsplash.com/photo-1621532933396-41493bc17c88?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bXVydWRlc2h3YXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 14.0940,
+      lng: 74.4869
+    },
+    category: ["Religious", "Beach", "Architecture"],
+    bestTimeToVisit: "October to May",
+    thingsToSee: [
+      "Shiva Statue",
+      "Murudeshwar Temple",
+      "Murudeshwar Beach",
+      "Gopura (Raja Gopura)",
+      "Netrani Island"
+    ],
+    nearbyDestinations: ["gokarna", "jog-falls"]
+  },
+  {
+    id: "udupi",
+    name: "Udupi",
+    description: "Udupi is a coastal city known for its Krishna Temple, distinctive cuisine, and beautiful beaches. It's one of the seven holy cities of Hinduism and a major pilgrimage site. Besides its religious significance, Udupi is famous for its vegetarian cuisine, which has influenced South Indian restaurants worldwide. The city blends spirituality, culture, and natural beauty.",
+    shortDescription: "Coastal temple town famous for Krishna Temple, distinctive cuisine, and beautiful beaches.",
+    image: "https://images.unsplash.com/photo-1606298855672-3efb63017be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dWR1cGl8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 13.3409,
+      lng: 74.7421
+    },
+    category: ["Religious", "Cuisine", "Beach"],
+    bestTimeToVisit: "October to March",
+    thingsToSee: [
+      "Sri Krishna Temple",
+      "Malpe Beach",
+      "St. Mary's Island",
+      "Kaup Beach & Lighthouse",
+      "Manipal Museum"
+    ],
+    nearbyDestinations: ["mangalore", "murudeshwar"]
   }
 ];
 

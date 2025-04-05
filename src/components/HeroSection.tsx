@@ -18,9 +18,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Hero Background with Carousel Effect */}
       <div className="absolute inset-0 bg-cover bg-center animate-slide-bg" 
         style={{ 
-          backgroundImage: "url('https://images.unsplash.com/photo-1621058677758-e80851a127c7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')"
+          backgroundImage: "url('https://images.unsplash.com/photo-1600100598629-200722fda2fb?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bXlzb3JlJTIwcGFsYWNlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80')"
         }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/60"></div>
       </div>
       
       {/* Floating Images of Places */}
@@ -61,6 +61,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({
               <p className="text-white text-xs md:text-sm font-medium text-center">Coorg</p>
             </div>
           </div>
+          
+          {/* Jog Falls Image - New */}
+          <div className="absolute top-[60%] left-[18%] w-32 h-32 md:w-36 md:h-36 rounded-lg overflow-hidden shadow-2xl transform rotate-[-6deg] animate-float opacity-90">
+            <img 
+              src="https://images.unsplash.com/photo-1629995233566-9aaf7a137200?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8am9nJTIwZmFsbHN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60" 
+              alt="Jog Falls" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2">
+              <p className="text-white text-xs md:text-sm font-medium text-center">Jog Falls</p>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -91,28 +103,34 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             <p className="text-sm uppercase text-gray-300 mb-4">Discover Karnataka's Top Destinations</p>
             <div className="flex flex-wrap gap-6 items-center">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
                   <span className="text-white text-xs">01</span>
                 </div>
                 <span className="text-white">Hampi</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
                   <span className="text-white text-xs">02</span>
                 </div>
                 <span className="text-white">Mysore</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
                   <span className="text-white text-xs">03</span>
                 </div>
                 <span className="text-white">Coorg</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
                   <span className="text-white text-xs">04</span>
                 </div>
-                <span className="text-white">Badami</span>
+                <span className="text-white">Jog Falls</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
+                  <span className="text-white text-xs">05</span>
+                </div>
+                <span className="text-white">Gokarna</span>
               </div>
             </div>
           </div>

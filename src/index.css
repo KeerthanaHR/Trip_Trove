@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
  
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 220 90% 56%;
     --primary-foreground: 210 40% 98%;
  
     --secondary: 210 40% 96.1%;
@@ -23,7 +23,7 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
-    --accent: 210 40% 96.1%;
+    --accent: 25 95% 53%;
     --accent-foreground: 222.2 47.4% 11.2%;
  
     --destructive: 0 84.2% 60.2%;
@@ -33,14 +33,17 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
  
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    /* Karnataka-inspired color palette */
-    --karnataka-orange: 25 100% 50%;
-    --karnataka-terracotta: 14 63% 45%;
+    /* Karnataka-inspired color palette - brighter version */
+    --karnataka-orange: 20 100% 60%;
+    --karnataka-terracotta: 4 75% 60%;
     --karnataka-cream: 43 100% 96%;
-    --karnataka-blue: 199 100% 32%;
-    --karnataka-green: 120 40% 45%;
+    --karnataka-blue: 210 100% 55%;
+    --karnataka-green: 145 68% 50%;
+    --karnataka-teal: 190 100% 42%;
+    --karnataka-purple: 270 70% 59%;
+    --karnataka-pink: 350 100% 65%;
   }
  
   .dark {
@@ -91,7 +94,7 @@
   );
 }
 
-/* Custom animations */
+/* Improved animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -136,6 +139,16 @@
   }
 }
 
+/* New shimmering animation for cards */
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 1s ease forwards;
 }
@@ -152,19 +165,62 @@
   animation: slide-bg 20s ease-in-out infinite;
 }
 
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
 /* Style for destination cards */
 .destination-card {
   transition: all 0.3s ease;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .destination-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.destination-card img {
+  transition: transform 0.7s ease;
+}
+
+.destination-card:hover img {
+  transform: scale(1.1);
 }
 
 /* Style for the map section */
 .custom-map-container {
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
+
+/* New gradient backgrounds */
+.bg-gradient-orange {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+}
+
+.bg-gradient-blue {
+  background: linear-gradient(135deg, #1A85FF 0%, #66B2FF 100%);
+}
+
+.bg-gradient-travel {
+  background: linear-gradient(180deg, #FFF8E8 0%, #FFE8D6 100%);
+}
+

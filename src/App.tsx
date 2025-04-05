@@ -11,6 +11,7 @@ import Plan from "./pages/Plan";
 import Community from "./pages/Community";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import DestinationDetails from "./pages/DestinationDetails";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/destination/:id" element={<DestinationDetails />} />
             <Route path="/plan" element={<Plan />} />
             <Route path="/community" element={<Community />} />
             <Route path="/auth" element={<Auth />} />

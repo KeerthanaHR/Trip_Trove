@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -64,13 +63,16 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				karnataka: {
-					'orange': '#E85A19',
-					'terracotta': '#CD5C5C',
-					'ochre': '#CC7722',
-					'blue': '#1A5276',
-					'green': '#1E8449',
+					'orange': '#FF6B35',
+					'terracotta': '#E85A4F',
+					'ochre': '#FCA311',
+					'blue': '#1A85FF',
+					'green': '#2ECC71',
 					'stone': '#D9BDAD',
-					'cream': '#F5F5DC',
+					'cream': '#FFF8E8',
+					'teal': '#00B4D8',
+					'purple': '#9D4EDD',
+					'pink': '#FF4D6D',
 				}
 			},
 			borderRadius: {
