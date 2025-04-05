@@ -225,6 +225,133 @@ export const destinations: Destination[] = [
       "Manipal Museum"
     ],
     nearbyDestinations: ["mangalore", "murudeshwar"]
+  },
+  // Adding more destinations
+  {
+    id: "belur",
+    name: "Belur",
+    description: "Belur is an ancient temple town known for its magnificent Chennakeshava Temple, a masterpiece of Hoysala architecture. Built in the 12th century, the temple is adorned with intricate carvings depicting scenes from Hindu mythology. Every inch of the temple's exterior is covered with sculptures, making it one of the finest examples of Hindu temple architecture in India.",
+    shortDescription: "Ancient temple town featuring the exquisite Chennakeshava Temple with remarkable Hoysala architecture.",
+    image: "https://images.unsplash.com/photo-1628961200491-89e4b3c8ca9f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmVsdXIlMjBjaGVubmFrZXNoYXZhfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 13.1650,
+      lng: 75.8648
+    },
+    category: ["Historical", "Architecture", "Religious"],
+    bestTimeToVisit: "October to March",
+    thingsToSee: [
+      "Chennakeshava Temple",
+      "Kappe Chennigaraya Temple",
+      "Veera Narayana Temple",
+      "Archaeological Museum",
+      "Yagachi Dam"
+    ],
+    nearbyDestinations: ["halebidu", "chikmagalur"]
+  },
+  {
+    id: "halebidu",
+    name: "Halebidu",
+    description: "Halebidu, meaning 'old city', was the ancient capital of the Hoysala Empire. The town is home to the stunning Hoysaleshwara Temple, built in the 12th century. The temple is known for its star-shaped design and detailed sculptures depicting Hindu mythology, celestial dancers, animals, and geometric patterns. The craftsmanship displayed in these carvings is considered some of the finest in Indian art.",
+    shortDescription: "Ancient Hoysala capital featuring the intricate Hoysaleshwara Temple with stunning stone carvings.",
+    image: "https://images.unsplash.com/photo-1623145849731-06f8d34b3de0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGFsZWJpZHUlMjB0ZW1wbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 13.2128,
+      lng: 75.9985
+    },
+    category: ["Historical", "Architecture", "Religious"],
+    bestTimeToVisit: "October to March",
+    thingsToSee: [
+      "Hoysaleshwara Temple",
+      "Kedareshwara Temple",
+      "Basadi Halli (Jain Temples)",
+      "Archaeological Museum",
+      "Dwarasamudra Lake"
+    ],
+    nearbyDestinations: ["belur", "chikmagalur"]
+  },
+  {
+    id: "pattadakal",
+    name: "Pattadakal",
+    description: "Pattadakal, a UNESCO World Heritage Site, is a historic complex of 7th and 8th-century temples that showcase the blending of northern and southern Indian architectural styles. This cultural fusion makes it a unique architectural laboratory where different temple building styles converged. The site served as a ceremonial center where Chalukya kings were crowned.",
+    shortDescription: "UNESCO site with a magnificent complex of temples blending northern and southern architectural styles.",
+    image: "https://images.unsplash.com/photo-1613375772563-af532af5cef9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGF0dGFkYWthbHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 15.9500,
+      lng: 75.8167
+    },
+    category: ["UNESCO World Heritage", "Historical", "Architecture"],
+    bestTimeToVisit: "October to March",
+    thingsToSee: [
+      "Virupaksha Temple",
+      "Mallikarjuna Temple",
+      "Papanatha Temple",
+      "Sangameshwara Temple",
+      "Galaganatha Temple"
+    ],
+    nearbyDestinations: ["badami", "aihole"]
+  },
+  {
+    id: "aihole",
+    name: "Aihole",
+    description: "Known as the 'Cradle of Indian Temple Architecture', Aihole contains over 125 temples dating from the 5th to 8th centuries. It was an experimental ground where architects developed different styles of temple construction that influenced later Indian architecture. The temples showcase early Chalukyan, Dravidian, and Nagara architectural styles with beautiful carvings and structural innovations.",
+    shortDescription: "Ancient architectural laboratory with over 125 temples showcasing early Indian temple design styles.",
+    image: "https://images.unsplash.com/photo-1626889861789-f328f40c1255?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YWlob2xlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 16.0200,
+      lng: 75.8800
+    },
+    category: ["Historical", "Architecture", "Religious"],
+    bestTimeToVisit: "October to March",
+    thingsToSee: [
+      "Durga Temple",
+      "Ladkhan Temple",
+      "Meguti Jain Temple",
+      "Huchimalli Temple",
+      "Archaeological Museum"
+    ],
+    nearbyDestinations: ["pattadakal", "badami"]
+  },
+  {
+    id: "kudremukh",
+    name: "Kudremukh",
+    description: "Kudremukh, meaning 'horse face' in Kannada, is named after a mountain peak that resembles a horse's face. This national park in the Western Ghats is known for its lush green forests, rolling hills, and diverse wildlife. The area is a biodiversity hotspot with endemic species of plants and animals, making it a paradise for nature lovers and trekkers.",
+    shortDescription: "Mountain national park with horse-face peak, lush forests, and rich biodiversity in the Western Ghats.",
+    image: "https://images.unsplash.com/photo-1596436889106-be35e843f974?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8a3VkcmVtdWtofGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 13.2222,
+      lng: 75.1807
+    },
+    category: ["Nature", "Trekking", "Wildlife"],
+    bestTimeToVisit: "October to May",
+    thingsToSee: [
+      "Kudremukh Peak",
+      "Hanuman Gundi Falls",
+      "Gangamoola",
+      "Kadambi Falls",
+      "Lakya Dam"
+    ],
+    nearbyDestinations: ["chikmagalur", "udupi"]
+  },
+  {
+    id: "kabini",
+    name: "Kabini",
+    description: "Kabini is a popular wildlife destination located at the edge of Nagarhole National Park. Named after the River Kabini, this region is famous for its wildlife safaris that offer opportunities to spot tigers, leopards, elephants, and various species of deer. The picturesque landscape with the backdrop of the Brahmagiri mountains makes it a photographer's paradise.",
+    shortDescription: "Wildlife sanctuary by the Kabini River offering exceptional safari experiences to spot diverse wildlife.",
+    image: "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8ZWxlcGhhbnQlMjBpbmRpYXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+    location: {
+      lat: 11.9456,
+      lng: 76.3540
+    },
+    category: ["Wildlife", "Safari", "Nature"],
+    bestTimeToVisit: "October to May",
+    thingsToSee: [
+      "Jungle Safari",
+      "Boat Safari",
+      "Elephant Camp",
+      "Bird Watching",
+      "Kabini Dam"
+    ],
+    nearbyDestinations: ["bandipur", "wayanad"]
   }
 ];
 

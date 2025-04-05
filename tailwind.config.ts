@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -73,6 +74,17 @@ export default {
 					'teal': '#00B4D8',
 					'purple': '#9D4EDD',
 					'pink': '#FF4D6D',
+					'navy': '#003566',
+					'gold': '#FFD700',
+					'ruby': '#CA054D',
+					'emerald': '#008148',
+					'coral': '#FF7F50',
+					'turquoise': '#40E0D0',
+					'amber': '#FFBF00',
+					'indigo': '#4B0082',
+					'maroon': '#800000',
+					'sage': '#BCB88A',
+					'scarlet': '#FF2400',
 				}
 			},
 			borderRadius: {
@@ -104,16 +116,47 @@ export default {
 					'100%': {
 						opacity: '1'
 					}
+				},
+				'float-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(20px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
+				'scale-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'scale(0.95)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'scale(1)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.5s ease-out'
+				'fade-in': 'fade-in 0.5s ease-out',
+				'float-in': 'float-in 0.7s ease-out',
+				'scale-in': 'scale-in 0.5s ease-out'
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				heading: ['Poppins', 'sans-serif'],
+			},
+			backgroundImage: {
+				'gradient-orange': 'linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%)',
+				'gradient-blue': 'linear-gradient(135deg, #1A85FF 0%, #66B2FF 100%)',
+				'gradient-travel': 'linear-gradient(180deg, #FFF8E8 0%, #FFE8D6 100%)',
+				'gradient-sunset': 'linear-gradient(to right, #FF512F, #F09819)',
+				'gradient-ocean': 'linear-gradient(to right, #1A85FF, #00B4D8)',
+				'gradient-forest': 'linear-gradient(to right, #134E5E, #71B280)',
+				'gradient-royal': 'linear-gradient(to right, #4B0082, #9D4EDD)',
 			}
 		}
 	},

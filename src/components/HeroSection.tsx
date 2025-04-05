@@ -18,9 +18,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Hero Background with Carousel Effect */}
       <div className="absolute inset-0 bg-cover bg-center animate-slide-bg" 
         style={{ 
-          backgroundImage: "url('https://images.unsplash.com/photo-1600100598629-200722fda2fb?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bXlzb3JlJTIwcGFsYWNlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80')"
+          backgroundImage: "url('https://images.unsplash.com/photo-1533387520709-752d83de3630?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80')"
         }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70"></div>
       </div>
       
       {/* Floating Images of Places */}
@@ -62,7 +62,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
           </div>
           
-          {/* Jog Falls Image - New */}
+          {/* Jog Falls Image */}
           <div className="absolute top-[60%] left-[18%] w-32 h-32 md:w-36 md:h-36 rounded-lg overflow-hidden shadow-2xl transform rotate-[-6deg] animate-float opacity-90">
             <img 
               src="https://images.unsplash.com/photo-1629995233566-9aaf7a137200?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8am9nJTIwZmFsbHN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60" 
@@ -79,7 +79,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Hero Content */}
       <div className="container relative h-full mx-auto px-4 flex flex-col justify-center">
         <div className="max-w-2xl text-white">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in font-heading">
             {title}
           </h1>
           <p className="text-xl md:text-2xl mb-10 text-gray-100 animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -87,12 +87,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </p>
           <div className="flex flex-col sm:flex-row gap-5 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <Link to="/explore">
-              <Button className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white px-8 py-6 text-lg rounded-full shadow-lg transition-all hover:scale-105">
+              <Button className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white px-8 py-6 text-lg rounded-full font-medium shadow-lg transition-all hover:scale-105">
                 Explore Destinations
               </Button>
             </Link>
             <Link to="/plan">
-              <Button variant="outline" className="border-white border-2 text-white hover:bg-white hover:text-karnataka-orange px-8 py-6 text-lg rounded-full shadow-lg transition-all hover:scale-105">
+              <Button variant="outline" className="border-white border-2 text-white hover:bg-white hover:text-karnataka-orange px-8 py-6 text-lg rounded-full font-medium shadow-lg transition-all hover:scale-105">
                 Plan Your Trip <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -100,7 +100,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           
           {/* Featured On Section */}
           <div className="mt-16 pt-8 border-t border-white/20 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <p className="text-sm uppercase text-gray-300 mb-4">Discover Karnataka's Top Destinations</p>
+            <p className="text-sm uppercase text-gray-300 mb-4 font-medium">Discover Karnataka's Top Destinations</p>
             <div className="flex flex-wrap gap-6 items-center">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">

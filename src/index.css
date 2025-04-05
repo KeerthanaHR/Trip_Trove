@@ -35,7 +35,7 @@
  
     --radius: 0.75rem;
 
-    /* Karnataka-inspired color palette - brighter version */
+    /* Vibrant travel-inspired color palette */
     --karnataka-orange: 20 100% 60%;
     --karnataka-terracotta: 4 75% 60%;
     --karnataka-cream: 43 100% 96%;
@@ -44,6 +44,10 @@
     --karnataka-teal: 190 100% 42%;
     --karnataka-purple: 270 70% 59%;
     --karnataka-pink: 350 100% 65%;
+    --karnataka-navy: 214 100% 20%;
+    --karnataka-gold: 50 100% 50%;
+    --karnataka-ruby: 337 95% 40%;
+    --karnataka-emerald: 148 100% 25%;
   }
  
   .dark {
@@ -82,9 +86,15 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
   }
 }
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
 
 .hero-gradient {
   background: linear-gradient(
@@ -94,7 +104,7 @@
   );
 }
 
-/* Improved animations */
+/* Enhanced animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -139,13 +149,33 @@
   }
 }
 
-/* New shimmering animation for cards */
+/* Shimmering animation for cards */
 @keyframes shimmer {
   0% {
     background-position: -100% 0;
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+/* Pulse animation for buttons */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Continuous glow effect for interactive elements */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 107, 53, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
   }
 }
 
@@ -183,6 +213,14 @@
   pointer-events: none;
 }
 
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
 /* Style for destination cards */
 .destination-card {
   transition: all 0.3s ease;
@@ -204,6 +242,20 @@
   transform: scale(1.1);
 }
 
+/* Interactive buttons */
+.interactive-btn {
+  @apply relative overflow-hidden transition-all duration-300 transform hover:scale-105;
+}
+
+.interactive-btn::after {
+  content: "";
+  @apply absolute inset-0 bg-white opacity-20 transform scale-x-0 origin-right transition-transform duration-300;
+}
+
+.interactive-btn:hover::after {
+  @apply scale-x-100 origin-left;
+}
+
 /* Style for the map section */
 .custom-map-container {
   border-radius: 16px;
@@ -211,7 +263,7 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* New gradient backgrounds */
+/* Gradient backgrounds */
 .bg-gradient-orange {
   background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
 }
@@ -224,3 +276,41 @@
   background: linear-gradient(180deg, #FFF8E8 0%, #FFE8D6 100%);
 }
 
+.bg-gradient-sunset {
+  background: linear-gradient(to right, #FF512F, #F09819);
+}
+
+.bg-gradient-ocean {
+  background: linear-gradient(to right, #1A85FF, #00B4D8);
+}
+
+.bg-gradient-forest {
+  background: linear-gradient(to right, #134E5E, #71B280);
+}
+
+.bg-gradient-royal {
+  background: linear-gradient(to right, #4B0082, #9D4EDD);
+}
+
+/* Enhanced glassmorphism effect */
+.glass-card {
+  @apply backdrop-blur-md bg-white/30 border border-white/20 shadow-lg;
+}
+
+/* Custom badge styles */
+.badge-destination {
+  @apply px-3 py-1 text-xs rounded-full bg-karnataka-cream text-karnataka-blue font-medium;
+}
+
+.badge-featured {
+  @apply px-3 py-1 text-xs rounded-full bg-karnataka-orange text-white font-medium;
+}
+
+/* School Trip specific styles */
+.school-trip-section {
+  @apply bg-gradient-to-r from-teal-50 to-blue-50 py-16;
+}
+
+.school-trip-card {
+  @apply bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl;
+}

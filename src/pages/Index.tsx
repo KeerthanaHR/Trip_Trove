@@ -7,6 +7,7 @@ import FeaturedDestinations from '@/components/FeaturedDestinations';
 import CommunitySection from '@/components/CommunitySection';
 import MapSection from '@/components/MapSection';
 import TestimonialSection from '@/components/TestimonialSection';
+import TripBudgetCalculator from '@/components/TripBudgetCalculator';
 
 const Index = () => {
   return (
@@ -16,6 +17,7 @@ const Index = () => {
         <HeroSection />
         <FeaturedDestinations />
         <MapSection />
+        <TripBudgetCalculator />
         <CommunitySection />
         <TestimonialSection />
       </main>
