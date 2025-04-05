@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { destinations } from '@/data/karnataka-destinations';
 import { calculateOptimalRoute, calculateTotalDistance, estimateTotalTravelTime } from '@/utils/routeCalculator';
 import { MapPin, Navigation, Clock, PlaneTakeoff } from 'lucide-react';
+import { destinationsToPlaces, getDistance } from '@/utils/mapHelpers';
 
 // We're mocking a map since we're not installing real map libraries in this code block
 const MockMap = () => {
@@ -49,12 +50,8 @@ const MapSection: React.FC<MapSectionProps> = ({
   // Calculate optimal route when destinations change
   useEffect(() => {
     if (selectedDestinations.length > 0) {
-      const route = calculateOptimalRoute(selectedDestinations.map(d => ({
-        id: d.id,
-        name: d.name,
-        lat: d.location.lat,
-        lng: d.location.lng,
-      })));
+      const placesArray = destinationsToPlaces(selectedDestinations);
+      const route = calculateOptimalRoute(placesArray);
       
       // Map back to full destination objects
       const fullRouteDetails = route.map(r => 
@@ -129,7 +126,7 @@ const MapSection: React.FC<MapSectionProps> = ({
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-karnataka-orange" />
                         <span>
-                          Est. travel time: {estimateTotalTravelTime(selectedDestinations, 'car')} hours by car
+                          Est. travel time: {estimateTotalTravelTime(destinationsToPlaces(selectedDestinations), 'car')} hours by car
                         </span>
                       </div>
                     </div>
@@ -195,8 +192,8 @@ const MapSection: React.FC<MapSectionProps> = ({
                       <div>
                         <p className="font-medium">Estimated Times</p>
                         <p className="text-muted-foreground">
-                          Car: {estimateTotalTravelTime(optimalRoute, 'car')} hours<br />
-                          Bus: {estimateTotalTravelTime(optimalRoute, 'bus')} hours<br />
+                          Car: {estimateTotalTravelTime(destinationsToPlaces(optimalRoute), 'car')} hours<br />
+                          Bus: {estimateTotalTravelTime(destinationsToPlaces(optimalRoute), 'bus')} hours<br />
                           Train: Where available
                         </p>
                       </div>

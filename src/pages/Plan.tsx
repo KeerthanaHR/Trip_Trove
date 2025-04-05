@@ -9,6 +9,7 @@ import { destinations, Destination } from '@/data/karnataka-destinations';
 import { getTransportOptions, TransportOption } from '@/data/transportation-data';
 import { calculateOptimalRoute, calculateTotalDistance, estimateTotalTravelTime } from '@/utils/routeCalculator';
 import { MapPin, Navigation, ArrowRight, ArrowLeft, Clock, Calendar, Train, Bus, Car } from 'lucide-react';
+import { destinationsToPlaces, getDistance } from '@/utils/mapHelpers';
 
 const Plan = () => {
   const [step, setStep] = useState(1);
@@ -324,10 +325,10 @@ const Plan = () => {
                               <p className="font-medium">Estimated Travel Times</p>
                               <p className="text-muted-foreground">
                                 <span className="flex items-center gap-1 mt-1">
-                                  <Car className="h-4 w-4" /> {estimateTotalTravelTime(optimizedRoute, 'car')} hours by car
+                                  <Car className="h-4 w-4" /> {estimateTotalTravelTime(destinationsToPlaces(optimizedRoute), 'car')} hours by car
                                 </span>
                                 <span className="flex items-center gap-1 mt-1">
-                                  <Bus className="h-4 w-4" /> {estimateTotalTravelTime(optimizedRoute, 'bus')} hours by bus
+                                  <Bus className="h-4 w-4" /> {estimateTotalTravelTime(destinationsToPlaces(optimizedRoute), 'bus')} hours by bus
                                 </span>
                                 <span className="flex items-center gap-1 mt-1">
                                   <Train className="h-4 w-4" /> Travel times vary by route
