@@ -1,0 +1,186 @@
+
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { destinations, Destination } from '@/data/karnataka-destinations';
+import { MapPin, Filter, Search, ArrowRight } from 'lucide-react';
+
+const Explore = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  
+  // Extract all unique categories for filtering
+  const allCategories = Array.from(
+    new Set(destinations.flatMap(destination => destination.category))
+  ).sort();
+  
+  // Handle category selection/deselection
+  const toggleCategory = (category: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category) 
+        : [...prev, category]
+    );
+  };
+  
+  // Filter destinations based on search query and selected categories
+  const filteredDestinations = destinations.filter(destination => {
+    const matchesSearch = destination.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         destination.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategories = selectedCategories.length === 0 || 
+                             selectedCategories.some(category => 
+                               destination.category.includes(category)
+                             );
+    
+    return matchesSearch && matchesCategories;
+  });
+  
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow">
+        {/* Hero Banner */}
+        <div className="relative h-[40vh] min-h-[300px] w-full overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-center" 
+            style={{ 
+              backgroundImage: "url('https://images.unsplash.com/photo-1600100598626-28e4078364bd?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmFkYW1pJTIwY2F2ZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80')" 
+            }}>
+            <div className="absolute inset-0 hero-gradient"></div>
+          </div>
+          
+          <div className="container relative h-full mx-auto px-4 flex flex-col justify-center">
+            <div className="max-w-2xl text-white">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                Explore Karnataka
+              </h1>
+              <p className="text-lg md:text-xl mb-8 text-gray-100">
+                Discover the diverse destinations that make Karnataka a traveler's paradise.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Filters and Search */}
+        <section className="py-8 bg-secondary">
+          <div className="container mx-auto px-4">
+            <div className="rounded-lg bg-white p-6 shadow-sm -mt-10 relative">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-grow">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Input 
+                      placeholder="Search destinations, places, or activities..."
+                      className="pl-10 border-gray-300"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 items-center">
+                  <Filter className="h-5 w-5 text-muted-foreground mr-1" />
+                  <span className="text-sm font-medium mr-2">Filters:</span>
+                  {allCategories.map(category => (
+                    <Button
+                      key={category}
+                      variant={selectedCategories.includes(category) ? "default" : "outline"}
+                      className={`text-xs h-8 px-3 ${
+                        selectedCategories.includes(category) 
+                          ? 'bg-karnataka-orange hover:bg-karnataka-terracotta text-white' 
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                      }`}
+                      onClick={() => toggleCategory(category)}
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Destinations Grid */}
+        <section className="py-12 bg-secondary">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-10">
+              {filteredDestinations.length} {filteredDestinations.length === 1 ? 'Destination' : 'Destinations'} Found
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredDestinations.map(destination => (
+                <Card key={destination.id} className="overflow-hidden hover:shadow-lg transition-all">
+                  <div className="h-52 overflow-hidden">
+                    <img 
+                      src={destination.image} 
+                      alt={destination.name} 
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                    />
+                  </div>
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <CardTitle className="text-xl">{destination.name}</CardTitle>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <MapPin className="w-4 h-4 mr-1 text-karnataka-orange" />
+                        <span>Karnataka</span>
+                      </div>
+                    </div>
+                    <CardDescription>
+                      {destination.shortDescription}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium mb-1">Best Time to Visit:</h4>
+                      <p className="text-sm text-muted-foreground">{destination.bestTimeToVisit}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {destination.category.map((category, index) => (
+                        <span 
+                          key={index}
+                          className="px-3 py-1 text-xs rounded-full bg-karnataka-cream text-karnataka-blue"
+                        >
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Link to={`/destination/${destination.id}`} className="w-full">
+                      <Button variant="outline" className="w-full border-karnataka-orange text-karnataka-orange hover:bg-karnataka-orange hover:text-white">
+                        View Details <ArrowRight className="ml-2 w-4 h-4" />
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+            
+            {filteredDestinations.length === 0 && (
+              <div className="text-center py-20">
+                <h3 className="text-2xl font-medium mb-2">No destinations found</h3>
+                <p className="text-muted-foreground mb-6">Try adjusting your search criteria or clearing filters</p>
+                <Button 
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategories([]);
+                  }}
+                  className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white"
+                >
+                  Clear All Filters
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default Explore;
