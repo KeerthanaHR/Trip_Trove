@@ -4,7 +4,7 @@
 
 import { getDistance } from '@/data/transportation-data';
 
-interface Place {
+export interface Place {
   id: string;
   name: string;
   lat: number;

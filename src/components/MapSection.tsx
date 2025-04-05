@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { destinations } from '@/data/karnataka-destinations';
-import { calculateOptimalRoute, calculateTotalDistance, estimateTotalTravelTime } from '@/utils/routeCalculator';
+import { calculateOptimalRoute, calculateTotalDistance, estimateTotalTravelTime, Place } from '@/utils/routeCalculator';
 import { MapPin, Navigation, Clock, PlaneTakeoff } from 'lucide-react';
 import { destinationsToPlaces, getDistance } from '@/utils/mapHelpers';
 
@@ -12,7 +11,7 @@ const MockMap = () => {
   return (
     <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
       <div className="text-center p-8">
-        <MapPin className="h-10 w-10 text-karnataka-orange mx-auto mb-4" />
+        <MapPin className="h-10 w-10 text-teal-600 mx-auto mb-4" />
         <p className="text-gray-600 mb-2">Interactive Map Component</p>
         <p className="text-sm text-gray-500">
           This would be replaced with a real map using libraries like Leaflet or Google Maps
@@ -69,10 +68,10 @@ const MapSection: React.FC<MapSectionProps> = ({
   }, [selectedDestinations]);
   
   return (
-    <section className="py-16 bg-secondary">
+    <section className="py-16 bg-teal-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-teal-800">{title}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             {description}
           </p>
@@ -95,7 +94,7 @@ const MapSection: React.FC<MapSectionProps> = ({
                       key={destination.id}
                       className={`p-3 rounded-lg flex items-center gap-3 cursor-pointer transition-colors ${
                         selectedDestinations.some(d => d.id === destination.id) 
-                          ? 'bg-karnataka-orange text-white' 
+                          ? 'bg-teal-600 text-white' 
                           : 'bg-gray-100 hover:bg-gray-200'
                       }`}
                       onClick={() => handleDestinationSelect(destination)}
@@ -112,19 +111,19 @@ const MapSection: React.FC<MapSectionProps> = ({
                 </div>
                 
                 {selectedDestinations.length > 0 && (
-                  <div className="mt-6 p-4 bg-karnataka-cream rounded-lg">
+                  <div className="mt-6 p-4 bg-teal-50 rounded-lg">
                     <h4 className="font-medium mb-2">Your Trip Stats</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-karnataka-orange" />
+                        <MapPin className="h-4 w-4 text-teal-600" />
                         <span>{selectedDestinations.length} destinations selected</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Navigation className="h-4 w-4 text-karnataka-orange" />
+                        <Navigation className="h-4 w-4 text-teal-600" />
                         <span>Total distance: {totalDistance} km</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-karnataka-orange" />
+                        <Clock className="h-4 w-4 text-teal-600" />
                         <span>
                           Est. travel time: {estimateTotalTravelTime(destinationsToPlaces(selectedDestinations), 'car')} hours by car
                         </span>
@@ -168,7 +167,7 @@ const MapSection: React.FC<MapSectionProps> = ({
                   <div className="space-y-3">
                     {optimalRoute.map((destination, index) => (
                       <div key={destination.id} className="flex items-center gap-2">
-                        <div className="bg-karnataka-orange text-white rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0">
+                        <div className="bg-teal-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0">
                           {index + 1}
                         </div>
                         <span>{destination.name}</span>
@@ -181,14 +180,14 @@ const MapSection: React.FC<MapSectionProps> = ({
                   <h4 className="font-medium mb-4 text-lg">Travel Details</h4>
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <Navigation className="h-5 w-5 text-karnataka-orange" />
+                      <Navigation className="h-5 w-5 text-teal-600" />
                       <div>
                         <p className="font-medium">Total Distance</p>
                         <p className="text-muted-foreground">{totalDistance} kilometers</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Clock className="h-5 w-5 text-karnataka-orange" />
+                      <Clock className="h-5 w-5 text-teal-600" />
                       <div>
                         <p className="font-medium">Estimated Times</p>
                         <p className="text-muted-foreground">
@@ -204,10 +203,10 @@ const MapSection: React.FC<MapSectionProps> = ({
                 <div>
                   <h4 className="font-medium mb-4 text-lg">Actions</h4>
                   <div className="space-y-3">
-                    <Button className="w-full bg-karnataka-orange hover:bg-karnataka-terracotta">
+                    <Button className="w-full bg-teal-600 hover:bg-teal-700">
                       Save This Itinerary
                     </Button>
-                    <Button variant="outline" className="w-full border-karnataka-orange text-karnataka-orange hover:bg-karnataka-orange hover:text-white">
+                    <Button variant="outline" className="w-full border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white">
                       View Transportation Options
                     </Button>
                     <Button variant="secondary" className="w-full">
