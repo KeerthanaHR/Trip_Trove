@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -26,6 +25,8 @@ type Post = {
   id: string;
   title: string;
   content: string;
+  image_url?: string;
+  location?: string;
   created_at: string;
 };
 
@@ -38,7 +39,6 @@ const Dashboard = () => {
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
-    // If the user is not logged in and we're done loading, redirect to auth page
     if (!loading && !user) {
       navigate('/auth');
     }
@@ -46,13 +46,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (user) {
-      // Fetch user's saved trips
       const fetchTrips = async () => {
         try {
           setLoadingData(true);
           const { data, error } = await supabase
             .from('trips')
             .select('*')
+            .eq('user_id', user.id)
             .order('created_at', { ascending: false });
 
           if (error) {
@@ -72,12 +72,12 @@ const Dashboard = () => {
         }
       };
 
-      // Fetch user's posts
       const fetchPosts = async () => {
         try {
           const { data, error } = await supabase
             .from('posts')
             .select('*')
+            .eq('user_id', user.id)
             .order('created_at', { ascending: false });
 
           if (error) {
@@ -87,6 +87,11 @@ const Dashboard = () => {
           setPosts(data || []);
         } catch (error) {
           console.error('Error fetching posts:', error);
+          toast({
+            title: 'Failed to load posts',
+            description: error instanceof Error ? error.message : 'Unknown error',
+            variant: 'destructive',
+          });
         }
       };
 
@@ -106,7 +111,6 @@ const Dashboard = () => {
         throw error;
       }
 
-      // Update local state
       setTrips(trips.filter(trip => trip.id !== tripId));
       
       toast({
@@ -144,7 +148,6 @@ const Dashboard = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       <main className="flex-grow">
-        {/* Hero Banner */}
         <div className="relative h-[30vh] min-h-[200px] w-full overflow-hidden">
           <div className="absolute inset-0 bg-cover bg-center" 
             style={{ 
@@ -178,7 +181,6 @@ const Dashboard = () => {
               </TabsTrigger>
             </TabsList>
             
-            {/* Trips Tab */}
             <TabsContent value="trips" className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-gray-800">Your Saved Trips</h2>
@@ -291,12 +293,11 @@ const Dashboard = () => {
               )}
             </TabsContent>
             
-            {/* Posts Tab */}
             <TabsContent value="posts" className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-gray-800">Your Community Posts</h2>
                 <Button 
-                  onClick={() => navigate('/community')} 
+                  onClick={() => navigate('/create-post')} 
                   className="bg-teal-600 hover:bg-teal-700"
                 >
                   <PlusCircle className="mr-2 h-5 w-5" />
@@ -316,6 +317,15 @@ const Dashboard = () => {
                       </CardHeader>
                       <CardContent>
                         <p className="text-gray-700">{post.content.substring(0, 150)}...</p>
+                        {post.image_url && (
+                          <div className="mt-4">
+                            <img 
+                              src={post.image_url} 
+                              alt={post.title} 
+                              className="rounded-md w-full max-h-48 object-cover" 
+                            />
+                          </div>
+                        )}
                       </CardContent>
                       <CardFooter className="border-t pt-4 flex justify-between">
                         <Button 
@@ -327,12 +337,29 @@ const Dashboard = () => {
                         </Button>
                         <Button 
                           variant="destructive" 
-                          onClick={() => {
-                            // Delete post functionality
-                            toast({
-                              title: "Post deleted",
-                              description: "Your post has been removed",
-                            });
+                          onClick={async () => {
+                            try {
+                              const { error } = await supabase
+                                .from('posts')
+                                .delete()
+                                .eq('id', post.id);
+                              
+                              if (error) throw error;
+                              
+                              setPosts(posts.filter(p => p.id !== post.id));
+                              
+                              toast({
+                                title: "Post deleted",
+                                description: "Your post has been removed",
+                              });
+                            } catch (error) {
+                              console.error('Error deleting post:', error);
+                              toast({
+                                title: "Error deleting post",
+                                description: error instanceof Error ? error.message : "Unknown error",
+                                variant: "destructive"
+                              });
+                            }
                           }}
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
@@ -350,7 +377,7 @@ const Dashboard = () => {
                   <h3 className="text-xl font-medium mb-2">No posts yet</h3>
                   <p className="text-gray-500 mb-6">Share your Karnataka adventures with the community!</p>
                   <Button 
-                    onClick={() => navigate('/community')} 
+                    onClick={() => navigate('/create-post')} 
                     className="bg-teal-600 hover:bg-teal-700"
                   >
                     Create Your First Post

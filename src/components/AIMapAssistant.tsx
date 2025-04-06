@@ -1,245 +1,244 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { MapPin, Send, Bot, Compass, RotateCcw, Loader2 } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import { MapPin, Send, Search, Map, Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { destinations } from '@/data/karnataka-destinations';
 
-interface Message {
+// Define the message type
+type Message = {
   role: 'user' | 'assistant';
   content: string;
-  timestamp: Date;
-}
+};
 
 const AIMapAssistant = () => {
-  const [query, setQuery] = useState('');
-  const [location, setLocation] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState<Message[]>([
+    { 
+      role: 'assistant', 
+      content: 'Hello! I\'m your Karnataka travel assistant. Ask me about places to visit, travel tips, or help planning your itinerary!' 
+    }
+  ]);
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState(destinations);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+  const { user } = useAuth();
 
-  // Add initial welcome message
+  // Function to scroll to bottom of chat
   useEffect(() => {
-    setMessages([
-      {
-        role: 'assistant',
-        content: 'Hello! I\'m your Karnataka travel assistant. Ask me about places to visit, routes, or travel recommendations in Karnataka. I can help you discover heritage sites, natural wonders, and cultural experiences!',
-        timestamp: new Date()
-      }
-    ]);
-  }, []);
-
-  // Auto-scroll to bottom when messages change
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Search function
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = destinations.filter(
+        dest => dest.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+               dest.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               dest.region.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSearchResults(filtered);
+    } else {
+      setSearchResults(destinations);
+    }
+  }, [searchTerm]);
+
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!query.trim()) return;
-    
-    // Add user message
-    const userMessage: Message = {
-      role: 'user',
-      content: query,
-      timestamp: new Date()
-    };
-    
+    // Search already handled by useEffect
+  };
+
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
+
+    // Add user message to the chat
+    const userMessage = { role: 'user' as const, content: input };
     setMessages(prev => [...prev, userMessage]);
+    setInput('');
     setIsLoading(true);
-    
+
     try {
-      // Call the OpenAI edge function
-      const response = await supabase.functions.invoke('map-assistant', {
-        body: {
-          query,
-          userLocation: location,
-          context: 'Karnataka travel planning'
-        },
+      // Call the OpenAI function
+      const { data, error } = await supabase.functions.invoke('map-assistant', {
+        body: { 
+          messages: [...messages, userMessage],
+          user_id: user?.id || 'anonymous'
+        }
       });
 
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
+      if (error) throw error;
 
-      // Add AI response
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: response.data.response,
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, assistantMessage]);
+      if (data && data.message) {
+        // Add AI response to the chat
+        setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
+      }
     } catch (error) {
-      console.error('Error fetching AI response:', error);
+      console.error('Error calling AI assistant:', error);
+      setMessages(prev => [
+        ...prev, 
+        { 
+          role: 'assistant', 
+          content: "I'm sorry, I'm having trouble connecting to my knowledge base right now. Please try again later."
+        }
+      ]);
       
-      // Add error message
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: 'Sorry, I encountered an error while processing your request. Please try again later.',
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, errorMessage]);
+      toast({
+        title: 'Connection Error',
+        description: 'Could not connect to the AI service. Please try again later.',
+        variant: 'destructive'
+      });
     } finally {
       setIsLoading(false);
-      setQuery('');
     }
   };
 
-  const resetConversation = () => {
-    setMessages([
-      {
-        role: 'assistant',
-        content: 'Hello! I\'m your Karnataka travel assistant. How can I help you plan your journey?',
-        timestamp: new Date()
-      }
-    ]);
-  };
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
   return (
-    <section className="py-12 bg-gradient-to-b from-indigo-50 to-blue-50">
+    <div className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-indigo-800">Karnataka AI Travel Assistant</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Get personalized travel recommendations, optimal routes, and discover hidden gems across Karnataka
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Plan with AI & Maps</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Search for destinations, ask our AI for recommendations, and plan your perfect Karnataka trip
           </p>
         </div>
         
-        <Card className="max-w-3xl mx-auto shadow-lg overflow-hidden border-indigo-100">
-          <CardHeader className="bg-indigo-50 border-b border-indigo-100">
-            <CardTitle className="flex items-center gap-2 text-indigo-700">
-              <Bot className="h-6 w-6" />
-              AI Travel Guide
-            </CardTitle>
-            <CardDescription>
-              Powered by OpenAI to help you explore Karnataka
-            </CardDescription>
-          </CardHeader>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Search and Map Section */}
+          <div className="lg:col-span-1">
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Search className="h-5 w-5 mr-2 text-teal-600" />
+                  Find Destinations
+                </CardTitle>
+                <CardDescription>
+                  Search Karnataka's top attractions
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <form onSubmit={handleSearch} className="relative">
+                  <Input
+                    placeholder="Search places..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pr-10"
+                  />
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                </form>
+                
+                <div className="h-96 overflow-y-auto border rounded-md">
+                  {searchResults.length > 0 ? (
+                    <div className="divide-y">
+                      {searchResults.map((destination) => (
+                        <div key={destination.id} className="p-3 hover:bg-gray-50">
+                          <div className="font-medium">{destination.name}</div>
+                          <div className="text-sm text-gray-500 flex items-center mt-1">
+                            <MapPin className="h-3 w-3 mr-1" /> {destination.region}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-gray-500">
+                      No destinations found
+                    </div>
+                  )}
+                </div>
+                
+                <div className="pt-2 flex justify-center">
+                  <Button className="bg-teal-600 hover:bg-teal-700 w-full">
+                    <Map className="mr-2 h-4 w-4" />
+                    Open in Google Maps
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
           
-          <CardContent className="p-0">
-            <div className="h-[400px] overflow-y-auto p-4">
-              <div className="space-y-4">
-                {messages.map((message, index) => (
-                  <div 
-                    key={index} 
-                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div 
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === 'user' 
-                          ? 'bg-indigo-600 text-white' 
-                          : 'bg-gray-100 text-gray-800'
+          {/* AI Assistant Chat */}
+          <div className="lg:col-span-2">
+            <Card className="h-full flex flex-col">
+              <CardHeader>
+                <CardTitle>AI Travel Assistant</CardTitle>
+                <CardDescription>
+                  Chat with our AI to get personalized travel recommendations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <div 
+                  ref={chatContainerRef}
+                  className="h-96 overflow-y-auto border rounded-md p-4 mb-4 bg-gray-50"
+                >
+                  {messages.map((message, index) => (
+                    <div
+                      key={index}
+                      className={`mb-4 ${
+                        message.role === 'assistant' 
+                          ? 'text-left' 
+                          : 'text-right'
                       }`}
                     >
-                      <div className="text-sm whitespace-pre-wrap">{message.content}</div>
-                      <div 
-                        className={`text-xs mt-1 ${
-                          message.role === 'user' ? 'text-indigo-200' : 'text-gray-500'
+                      <div
+                        className={`inline-block px-4 py-2 rounded-lg ${
+                          message.role === 'assistant'
+                            ? 'bg-white text-gray-800 shadow-sm'
+                            : 'bg-teal-600 text-white'
                         }`}
                       >
-                        {formatTime(message.timestamp)}
+                        {message.content}
                       </div>
                     </div>
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 rounded-lg p-4 flex items-center space-x-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-indigo-600" />
-                      <span className="text-sm text-gray-500">Thinking...</span>
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-            </div>
-          </CardContent>
-          
-          <CardFooter className="border-t border-indigo-100 p-4 bg-white">
-            <form onSubmit={handleSubmit} className="w-full space-y-4">
-              <div className="flex gap-2">
-                <div className="w-full">
-                  <Label htmlFor="location" className="sr-only">Your location or context</Label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="location"
-                      placeholder="Your current location (optional)"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={resetConversation}
-                  className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
-                >
-                  <RotateCcw className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              <div className="flex gap-2">
-                <div className="flex-grow">
-                  <Label htmlFor="query" className="sr-only">Ask about Karnataka</Label>
-                  <Textarea
-                    id="query"
-                    placeholder="Ask about places to visit, routes between destinations, or travel recommendations..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="min-h-[60px] resize-none"
-                  />
-                </div>
-                <Button 
-                  type="submit" 
-                  className="self-end bg-indigo-600 hover:bg-indigo-700 h-[60px] w-[60px]"
-                  disabled={isLoading || !query.trim()}
-                >
-                  <Send className="h-5 w-5" />
-                </Button>
-              </div>
-              
-              <div className="text-xs text-gray-500">
-                <p>Suggested queries:</p>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {[
-                    "What are the must-visit places in Mysore?",
-                    "Best route from Bangalore to Coorg?",
-                    "Historical sites in Hampi",
-                    "Family-friendly destinations in Karnataka"
-                  ].map((suggestion, i) => (
-                    <Button
-                      key={i}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-7 px-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50"
-                      onClick={() => setQuery(suggestion)}
-                    >
-                      {suggestion}
-                    </Button>
                   ))}
+                  
+                  {isLoading && (
+                    <div className="text-left mb-4">
+                      <div className="inline-block px-4 py-2 rounded-lg bg-white text-gray-800 shadow-sm">
+                        <div className="flex items-center">
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Thinking...
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </form>
-          </CardFooter>
-        </Card>
+                
+                <div className="flex items-end gap-2">
+                  <Textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ask about places to visit, travel tips, or itinerary help..."
+                    className="resize-none"
+                    rows={2}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={isLoading || !input.trim()}
+                    className="bg-teal-600 hover:bg-teal-700 h-10 w-10 p-2"
+                  >
+                    <Send className="h-5 w-5" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 

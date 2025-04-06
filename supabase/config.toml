@@ -25,3 +25,4 @@ verify_jwt = false
 
 [functions.save-trip]
 verify_jwt = true
+

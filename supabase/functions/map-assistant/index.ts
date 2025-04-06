@@ -1,77 +1,140 @@
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.8'
+import { Application, Router } from 'https://deno.land/x/oak@v12.6.1/mod.ts'
+import { corsHeaders } from '../_shared/cors.ts'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+// OpenAI API configuration
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || ''
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
 
-serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+// Initialize Supabase client
+const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
+const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') || ''
+const supabase = createClient(supabaseUrl, supabaseKey)
 
+// Create Oak router
+const router = new Router()
+
+router.post('/', async (ctx) => {
   try {
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    
-    if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not set in the environment variables');
+    // Handle CORS
+    if (ctx.request.method === 'OPTIONS') {
+      ctx.response.headers.set('Access-Control-Allow-Origin', '*')
+      ctx.response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
+      ctx.response.headers.set('Access-Control-Allow-Headers', 'authorization, x-client-info, apikey, content-type')
+      ctx.response.status = 204
+      return
     }
 
-    const { query, userLocation, context } = await req.json();
-    
-    console.log("Received query:", query);
-    console.log("User location context:", userLocation);
-    
-    // Construct a prompt for OpenAI that helps with Karnataka travel
-    const systemPrompt = `You are a Karnataka travel assistant AI specializing in local attractions, routes, and travel recommendations.
-    Focus on providing information about Karnataka's heritage sites, natural attractions, and cultural landmarks.
-    Always include specific location information when possible (districts, nearby cities, etc).
-    If asked for routes, suggest optimal paths between destinations.`;
-    
-    // Enhance the user query with context
-    const enhancedQuery = `User query: ${query}
-    User's current location/context: ${userLocation || 'Not specified'}
-    Additional context: ${context || 'General Karnataka travel inquiry'}`;
+    // Set CORS headers for the actual response
+    for (const [key, value] of Object.entries(corsHeaders)) {
+      ctx.response.headers.set(key, value)
+    }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Parse request body
+    const body = await ctx.request.body.json()
+    const { messages = [], user_id = 'anonymous' } = body
+
+    if (!messages || messages.length === 0) {
+      ctx.response.status = 400
+      ctx.response.body = { error: 'Messages are required' }
+      return
+    }
+
+    // Log the request for debugging
+    console.log(`Received request from user ${user_id}`)
+
+    // Check if we have the OpenAI API key
+    if (!OPENAI_API_KEY) {
+      ctx.response.status = 500
+      ctx.response.body = { error: 'OpenAI API key not configured' }
+      return
+    }
+
+    // Prepare the context for the AI
+    const karnatakaTravelContext = `
+You are a specialized AI assistant for Karnataka tourism in India.
+You provide helpful information about:
+- Tourist attractions in Karnataka (Hampi, Mysore Palace, Coorg, etc.)
+- Local culture, festivals, and cuisine
+- Travel tips, best times to visit, and transportation options
+- Historical and cultural significance of places
+- Itinerary recommendations based on duration and interests
+- Safety advice and travel precautions
+
+Always be informative, helpful, and enthusiastic about Karnataka's beauty and cultural heritage.
+If you don't know something specific, acknowledge it but provide general related information that might be helpful.
+Keep responses concise, informative and practical for travelers.
+`
+
+    // Format messages for OpenAI
+    const formattedMessages = [
+      { role: 'system', content: karnatakaTravelContext },
+      ...messages.map((msg: any) => ({
+        role: msg.role,
+        content: msg.content,
+      })),
+    ]
+
+    // Call OpenAI API
+    const openAIResponse = await fetch(OPENAI_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: enhancedQuery }
-        ],
+        model: 'gpt-3.5-turbo',
+        messages: formattedMessages,
         temperature: 0.7,
-        max_tokens: 1000,
+        max_tokens: 500,
       }),
-    });
+    })
 
-    const data = await response.json();
-    console.log("OpenAI response received");
-    
-    if (data.error) {
-      throw new Error(`OpenAI API error: ${data.error.message}`);
+    const data = await openAIResponse.json()
+
+    if (!openAIResponse.ok) {
+      console.error('OpenAI API error:', data)
+      ctx.response.status = openAIResponse.status
+      ctx.response.body = { error: 'Error getting response from AI service', details: data }
+      return
     }
 
-    const assistantResponse = data.choices[0].message.content;
+    // Extract the assistant's message
+    const assistantMessage = data.choices?.[0]?.message?.content || 'Sorry, I couldn\'t generate a response'
 
-    return new Response(JSON.stringify({ 
-      response: assistantResponse 
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    // Log the AI conversation
+    try {
+      await supabase
+        .from('ai_chat_logs')
+        .insert([
+          { 
+            user_id, 
+            user_message: messages[messages.length - 1]?.content || '', 
+            assistant_response: assistantMessage 
+          }
+        ])
+      
+      console.log('Logged conversation successfully')
+    } catch (error) {
+      console.error('Error logging conversation:', error)
+      // Continue even if logging fails
+    }
+
+    // Return the response
+    ctx.response.body = { message: assistantMessage }
   } catch (error) {
-    console.error('Error in map-assistant function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.error('Unexpected error:', error)
+    ctx.response.status = 500
+    ctx.response.body = { error: 'Internal server error' }
   }
-});
+})
+
+// Create Oak application
+const app = new Application()
+app.use(router.routes())
+app.use(router.allowedMethods())
+
+// Start the server
+console.log('Map assistant function is running on port 8000')
+await app.listen({ port: 8000 })
