@@ -91,48 +91,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                 Explore Destinations
               </Button>
             </Link>
-            <Link to="/plan">
-              <Button variant="outline" className="border-white border-2 text-white hover:bg-white hover:text-karnataka-orange px-8 py-6 text-lg rounded-full font-medium shadow-lg transition-all hover:scale-105">
-                Plan Your Trip <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-          
-          {/* Featured On Section */}
-          <div className="mt-16 pt-8 border-t border-white/20 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <p className="text-sm uppercase text-gray-300 mb-4 font-medium">Discover Karnataka's Top Destinations</p>
-            <div className="flex flex-wrap gap-6 items-center">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
-                  <span className="text-white text-xs">01</span>
-                </div>
-                <span className="text-white">Hampi</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
-                  <span className="text-white text-xs">02</span>
-                </div>
-                <span className="text-white">Mysore</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
-                  <span className="text-white text-xs">03</span>
-                </div>
-                <span className="text-white">Coorg</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
-                  <span className="text-white text-xs">04</span>
-                </div>
-                <span className="text-white">Jog Falls</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-karnataka-orange/80 flex items-center justify-center">
-                  <span className="text-white text-xs">05</span>
-                </div>
-                <span className="text-white">Gokarna</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>

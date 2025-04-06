@@ -4,7 +4,6 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MapSection from '@/components/MapSection';
 import TripBudgetCalculator from '@/components/TripBudgetCalculator';
-import SchoolTripPlanner from '@/components/SchoolTripPlanner';
 import AIMapAssistant from '@/components/AIMapAssistant';
 
 const Plan = () => {
@@ -35,7 +34,6 @@ const Plan = () => {
         <AIMapAssistant />
         <MapSection />
         <TripBudgetCalculator />
-        <SchoolTripPlanner />
       </main>
       <Footer />
     </div>
