@@ -7,15 +7,21 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { destinations, Destination } from '@/data/karnataka-destinations';
-import { MapPin, Filter, Search, ArrowRight, Star } from 'lucide-react';
+import { MapPin, Filter, Search, ArrowRight, Star, Map, Globe } from 'lucide-react';
 
 const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   
   // Extract all unique categories for filtering
   const allCategories = Array.from(
     new Set(destinations.flatMap(destination => destination.category))
+  ).sort();
+  
+  // Extract all unique regions for filtering
+  const allRegions = Array.from(
+    new Set(destinations.map(destination => destination.region))
   ).sort();
   
   // Handle category selection/deselection
@@ -27,7 +33,16 @@ const Explore = () => {
     );
   };
   
-  // Filter destinations based on search query and selected categories
+  // Handle region selection/deselection
+  const toggleRegion = (region: string) => {
+    setSelectedRegions(prev => 
+      prev.includes(region) 
+        ? prev.filter(r => r !== region) 
+        : [...prev, region]
+    );
+  };
+  
+  // Filter destinations based on search query, selected categories, and regions
   const filteredDestinations = destinations.filter(destination => {
     const matchesSearch = destination.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          destination.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -37,7 +52,10 @@ const Explore = () => {
                                destination.category.includes(category)
                              );
     
-    return matchesSearch && matchesCategories;
+    const matchesRegions = selectedRegions.length === 0 ||
+                          selectedRegions.includes(destination.region);
+    
+    return matchesSearch && matchesCategories && matchesRegions;
   });
   
   return (
@@ -56,10 +74,10 @@ const Explore = () => {
           <div className="container relative h-full mx-auto px-4 flex flex-col justify-center">
             <div className="max-w-2xl text-white">
               <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">
-                Explore Karnataka
+                Explore All of Karnataka
               </h1>
               <p className="text-lg md:text-xl mb-8 text-gray-100 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                Discover the diverse destinations that make Karnataka a traveler's paradise.
+                Discover destinations across all regions of Karnataka - from coastal beaches to mountain retreats, ancient temples to modern cities.
               </p>
               <div className="flex items-center space-x-2 animate-fade-in" style={{ animationDelay: '0.3s' }}>
                 <div className="flex space-x-1">
@@ -89,23 +107,47 @@ const Explore = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2 items-center">
-                  <Filter className="h-5 w-5 text-muted-foreground mr-1" />
-                  <span className="text-sm font-medium mr-2">Filters:</span>
-                  {allCategories.map(category => (
-                    <Button
-                      key={category}
-                      variant={selectedCategories.includes(category) ? "default" : "outline"}
-                      className={`text-xs h-8 px-3 rounded-full ${
-                        selectedCategories.includes(category) 
-                          ? 'bg-karnataka-orange hover:bg-karnataka-terracotta text-white' 
-                          : 'border-gray-300 text-gray-700 hover:bg-gray-100'
-                      }`}
-                      onClick={() => toggleCategory(category)}
-                    >
-                      {category}
-                    </Button>
-                  ))}
+                
+                <div className="flex flex-col gap-4">
+                  {/* Categories Filter */}
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <Filter className="h-5 w-5 text-muted-foreground mr-1" />
+                    <span className="text-sm font-medium mr-2">Activities:</span>
+                    {allCategories.map(category => (
+                      <Button
+                        key={category}
+                        variant={selectedCategories.includes(category) ? "default" : "outline"}
+                        className={`text-xs h-8 px-3 rounded-full ${
+                          selectedCategories.includes(category) 
+                            ? 'bg-karnataka-orange hover:bg-karnataka-terracotta text-white' 
+                            : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                        }`}
+                        onClick={() => toggleCategory(category)}
+                      >
+                        {category}
+                      </Button>
+                    ))}
+                  </div>
+                  
+                  {/* Regions Filter */}
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <Globe className="h-5 w-5 text-muted-foreground mr-1" />
+                    <span className="text-sm font-medium mr-2">Regions:</span>
+                    {allRegions.map(region => (
+                      <Button
+                        key={region}
+                        variant={selectedRegions.includes(region) ? "default" : "outline"}
+                        className={`text-xs h-8 px-3 rounded-full ${
+                          selectedRegions.includes(region) 
+                            ? 'bg-karnataka-blue hover:bg-karnataka-darkblue text-white' 
+                            : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                        }`}
+                        onClick={() => toggleRegion(region)}
+                      >
+                        {region}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -118,7 +160,7 @@ const Explore = () => {
             <h2 className="text-3xl font-bold mb-4 text-gray-800">
               {filteredDestinations.length} {filteredDestinations.length === 1 ? 'Destination' : 'Destinations'} Found
             </h2>
-            <p className="text-gray-600 mb-10">Discover Karnataka's rich cultural heritage and breathtaking landscapes</p>
+            <p className="text-gray-600 mb-10">Discover Karnataka's rich cultural heritage and breathtaking landscapes across the entire state</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredDestinations.map(destination => (
@@ -135,7 +177,7 @@ const Explore = () => {
                       <CardTitle className="text-xl font-bold">{destination.name}</CardTitle>
                       <div className="flex items-center text-sm text-muted-foreground">
                         <MapPin className="w-4 h-4 mr-1 text-karnataka-orange" />
-                        <span>Karnataka</span>
+                        <span>{destination.region}</span>
                       </div>
                     </div>
                     <CardDescription className="text-base">
@@ -177,6 +219,7 @@ const Explore = () => {
                   onClick={() => {
                     setSearchQuery("");
                     setSelectedCategories([]);
+                    setSelectedRegions([]);
                   }}
                   className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white rounded-full"
                 >
