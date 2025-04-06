@@ -1,4 +1,3 @@
-
 export interface Destination {
   id: string;
   name: string;
@@ -9,6 +8,7 @@ export interface Destination {
     lat: number;
     lng: number;
   };
+  region: string;
   category: string[];
   bestTimeToVisit: string;
   thingsToSee: string[];
@@ -26,6 +26,7 @@ export const destinations: Destination[] = [
       lat: 15.3350,
       lng: 76.4600
     },
+    region: "Northern Karnataka",
     category: ["Historical", "UNESCO World Heritage", "Architecture"],
     bestTimeToVisit: "October to February",
     thingsToSee: [
@@ -47,6 +48,7 @@ export const destinations: Destination[] = [
       lat: 12.3052,
       lng: 76.6552
     },
+    region: "Southern Karnataka",
     category: ["Historical", "Architecture", "Royal Heritage"],
     bestTimeToVisit: "September to March",
     thingsToSee: [
@@ -68,6 +70,7 @@ export const destinations: Destination[] = [
       lat: 15.9199,
       lng: 75.6873
     },
+    region: "Northern Karnataka",
     category: ["Historical", "Architecture", "Religious"],
     bestTimeToVisit: "October to March",
     thingsToSee: [
@@ -89,6 +92,7 @@ export const destinations: Destination[] = [
       lat: 12.4244,
       lng: 75.7382
     },
+    region: "Western Ghats",
     category: ["Hill Station", "Nature", "Adventure"],
     bestTimeToVisit: "October to March",
     thingsToSee: [
@@ -110,6 +114,7 @@ export const destinations: Destination[] = [
       lat: 14.5479,
       lng: 74.3188
     },
+    region: "Coastal Karnataka",
     category: ["Beach", "Pilgrimage", "Nature"],
     bestTimeToVisit: "October to March",
     thingsToSee: [
@@ -131,6 +136,7 @@ export const destinations: Destination[] = [
       lat: 11.6700,
       lng: 76.6338
     },
+    region: "Southern Karnataka",
     category: ["Wildlife", "Nature", "Safari"],
     bestTimeToVisit: "October to May",
     thingsToSee: [
@@ -152,6 +158,7 @@ export const destinations: Destination[] = [
       lat: 14.2236,
       lng: 74.7933
     },
+    region: "Western Ghats",
     category: ["Waterfall", "Nature", "Photography"],
     bestTimeToVisit: "July to October",
     thingsToSee: [
@@ -173,6 +180,7 @@ export const destinations: Destination[] = [
       lat: 13.3161,
       lng: 75.7720
     },
+    region: "Western Ghats",
     category: ["Hill Station", "Nature", "Adventure"],
     bestTimeToVisit: "September to May",
     thingsToSee: [
@@ -194,6 +202,7 @@ export const destinations: Destination[] = [
       lat: 14.0940,
       lng: 74.4869
     },
+    region: "Coastal Karnataka",
     category: ["Religious", "Beach", "Architecture"],
     bestTimeToVisit: "October to May",
     thingsToSee: [
@@ -215,6 +224,7 @@ export const destinations: Destination[] = [
       lat: 13.3409,
       lng: 74.7421
     },
+    region: "Coastal Karnataka",
     category: ["Religious", "Cuisine", "Beach"],
     bestTimeToVisit: "October to March",
     thingsToSee: [
@@ -226,7 +236,6 @@ export const destinations: Destination[] = [
     ],
     nearbyDestinations: ["mangalore", "murudeshwar"]
   },
-  // Adding more destinations
   {
     id: "belur",
     name: "Belur",
@@ -237,6 +246,7 @@ export const destinations: Destination[] = [
       lat: 13.1650,
       lng: 75.8648
     },
+    region: "Central Karnataka",
     category: ["Historical", "Architecture", "Religious"],
     bestTimeToVisit: "October to March",
     thingsToSee: [
@@ -258,6 +268,7 @@ export const destinations: Destination[] = [
       lat: 13.2128,
       lng: 75.9985
     },
+    region: "Central Karnataka",
     category: ["Historical", "Architecture", "Religious"],
     bestTimeToVisit: "October to March",
     thingsToSee: [
@@ -279,6 +290,7 @@ export const destinations: Destination[] = [
       lat: 15.9500,
       lng: 75.8167
     },
+    region: "Northern Karnataka",
     category: ["UNESCO World Heritage", "Historical", "Architecture"],
     bestTimeToVisit: "October to March",
     thingsToSee: [
@@ -300,6 +312,7 @@ export const destinations: Destination[] = [
       lat: 16.0200,
       lng: 75.8800
     },
+    region: "Northern Karnataka",
     category: ["Historical", "Architecture", "Religious"],
     bestTimeToVisit: "October to March",
     thingsToSee: [
@@ -321,6 +334,7 @@ export const destinations: Destination[] = [
       lat: 13.2222,
       lng: 75.1807
     },
+    region: "Western Ghats",
     category: ["Nature", "Trekking", "Wildlife"],
     bestTimeToVisit: "October to May",
     thingsToSee: [
@@ -342,6 +356,7 @@ export const destinations: Destination[] = [
       lat: 11.9456,
       lng: 76.3540
     },
+    region: "Southern Karnataka",
     category: ["Wildlife", "Safari", "Nature"],
     bestTimeToVisit: "October to May",
     thingsToSee: [

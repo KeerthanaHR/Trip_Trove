@@ -1,140 +1,81 @@
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.8'
-import { Application, Router } from 'https://deno.land/x/oak@v12.6.1/mod.ts'
-import { corsHeaders } from '../_shared/cors.ts'
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.1.1";
+import { corsHeaders } from "../_shared/cors.ts";
 
-// OpenAI API configuration
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || ''
-const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
 
-// Initialize Supabase client
-const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
-const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') || ''
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-// Create Oak router
-const router = new Router()
-
-router.post('/', async (ctx) => {
   try {
-    // Handle CORS
-    if (ctx.request.method === 'OPTIONS') {
-      ctx.response.headers.set('Access-Control-Allow-Origin', '*')
-      ctx.response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
-      ctx.response.headers.set('Access-Control-Allow-Headers', 'authorization, x-client-info, apikey, content-type')
-      ctx.response.status = 204
-      return
-    }
+    // Get the request body
+    const { messages, user_id } = await req.json();
+    
+    // Log the incoming request for debugging
+    console.log("Received request for map-assistant:", { user_id, messageCount: messages.length });
 
-    // Set CORS headers for the actual response
-    for (const [key, value] of Object.entries(corsHeaders)) {
-      ctx.response.headers.set(key, value)
-    }
-
-    // Parse request body
-    const body = await ctx.request.body.json()
-    const { messages = [], user_id = 'anonymous' } = body
-
-    if (!messages || messages.length === 0) {
-      ctx.response.status = 400
-      ctx.response.body = { error: 'Messages are required' }
-      return
-    }
-
-    // Log the request for debugging
-    console.log(`Received request from user ${user_id}`)
-
-    // Check if we have the OpenAI API key
+    // Check if OpenAI API key is set in environment
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {
-      ctx.response.status = 500
-      ctx.response.body = { error: 'OpenAI API key not configured' }
-      return
+      throw new Error('OpenAI API key is not configured');
     }
-
-    // Prepare the context for the AI
-    const karnatakaTravelContext = `
-You are a specialized AI assistant for Karnataka tourism in India.
-You provide helpful information about:
-- Tourist attractions in Karnataka (Hampi, Mysore Palace, Coorg, etc.)
-- Local culture, festivals, and cuisine
-- Travel tips, best times to visit, and transportation options
-- Historical and cultural significance of places
-- Itinerary recommendations based on duration and interests
-- Safety advice and travel precautions
-
-Always be informative, helpful, and enthusiastic about Karnataka's beauty and cultural heritage.
-If you don't know something specific, acknowledge it but provide general related information that might be helpful.
-Keep responses concise, informative and practical for travelers.
-`
-
-    // Format messages for OpenAI
-    const formattedMessages = [
-      { role: 'system', content: karnatakaTravelContext },
-      ...messages.map((msg: any) => ({
-        role: msg.role,
-        content: msg.content,
-      })),
-    ]
 
     // Call OpenAI API
-    const openAIResponse = await fetch(OPENAI_API_URL, {
+    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: formattedMessages,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a specialized travel assistant for Karnataka, India. You know all about tourist destinations, local customs, transportation, accommodations, food, and travel tips specifically for Karnataka. Provide helpful, accurate and specific advice to travelers. Limit your responses to Karnataka-related travel information. Provide rich, detailed responses, but keep them concise under 1500 characters.'
+          },
+          ...messages.map((msg: { role: string; content: string }) => ({
+            role: msg.role,
+            content: msg.content
+          }))
+        ],
         temperature: 0.7,
-        max_tokens: 500,
-      }),
-    })
+        max_tokens: 1000
+      })
+    });
 
-    const data = await openAIResponse.json()
+    const openAIData = await openAIResponse.json();
+    
+    console.log("Received response from OpenAI");
 
     if (!openAIResponse.ok) {
-      console.error('OpenAI API error:', data)
-      ctx.response.status = openAIResponse.status
-      ctx.response.body = { error: 'Error getting response from AI service', details: data }
-      return
+      console.error("OpenAI API error:", openAIData);
+      throw new Error('Failed to get response from AI service');
     }
 
-    // Extract the assistant's message
-    const assistantMessage = data.choices?.[0]?.message?.content || 'Sorry, I couldn\'t generate a response'
+    const aiMessage = openAIData.choices[0].message.content;
 
-    // Log the AI conversation
-    try {
-      await supabase
-        .from('ai_chat_logs')
-        .insert([
-          { 
-            user_id, 
-            user_message: messages[messages.length - 1]?.content || '', 
-            assistant_response: assistantMessage 
-          }
-        ])
-      
-      console.log('Logged conversation successfully')
-    } catch (error) {
-      console.error('Error logging conversation:', error)
-      // Continue even if logging fails
-    }
-
-    // Return the response
-    ctx.response.body = { message: assistantMessage }
+    // Log and store the conversation in the database if needed
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || 'https://crwbnkeadskmggpvkgin.supabase.co';
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyd2Jua2VhZHNrbWdncHZrZ2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4NTUyMzYsImV4cCI6MjA1OTQzMTIzNn0.n1qtQC5U6Ph-W6QOm8ognWVUIaLJPpIlr8J7ju5DKFQ';
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    return new Response(JSON.stringify({ 
+      message: aiMessage
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200
+    });
   } catch (error) {
-    console.error('Unexpected error:', error)
-    ctx.response.status = 500
-    ctx.response.body = { error: 'Internal server error' }
+    console.error('Error in map-assistant function:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message 
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500
+    });
   }
-})
-
-// Create Oak application
-const app = new Application()
-app.use(router.routes())
-app.use(router.allowedMethods())
-
-// Start the server
-console.log('Map assistant function is running on port 8000')
-await app.listen({ port: 8000 })
+});

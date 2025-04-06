@@ -31,6 +31,7 @@ const App = () => (
             <Route path="/destination/:id" element={<DestinationDetails />} />
             <Route path="/plan" element={<Plan />} />
             <Route path="/community" element={<Community />} />
+            <Route path="/community/post/:id" element={<Community />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-post" element={<CreatePost />} />
