@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import MapSection from '@/components/MapSection';
 import TripBudgetCalculator from '@/components/TripBudgetCalculator';
 import SchoolTripPlanner from '@/components/SchoolTripPlanner';
+import AIMapAssistant from '@/components/AIMapAssistant';
 
 const Plan = () => {
   return (
@@ -31,6 +32,7 @@ const Plan = () => {
           </div>
         </div>
         
+        <AIMapAssistant />
         <MapSection />
         <TripBudgetCalculator />
         <SchoolTripPlanner />
