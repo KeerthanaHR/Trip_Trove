@@ -10,12 +10,12 @@ interface HeroSectionProps {
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({
-  title = "Discover Karnataka's Heritage",
-  subtitle = "Explore ancient temples, majestic palaces, and pristine beaches with our community-driven travel platform.",
+  title = "Explore Karnataka",
+  subtitle = "Discover the beauty and culture of Karnataka with our travel platform.",
   backgroundImage = "https://images.unsplash.com/photo-1605649461784-efd458e87436?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGFtcGklMjBpbmRpYXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
 }) => {
   return (
-    <div className="relative h-[90vh] min-h-[600px] w-full overflow-hidden">
+    <div className="relative h-[85vh] min-h-[500px] w-full overflow-hidden">
       {/* Hero Background with static image */}
       <div className="absolute inset-0 bg-cover bg-center" 
         style={{ 
@@ -27,7 +27,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Hero Content */}
       <div className="container relative h-full mx-auto px-4 flex flex-col justify-center">
         <div className="max-w-2xl text-white">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight font-heading">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
             {title}
           </h1>
           <p className="text-xl md:text-2xl mb-10 text-gray-100">
@@ -35,7 +35,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </p>
           <div className="flex flex-col sm:flex-row gap-5">
             <Link to="/explore">
-              <Button className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white px-8 py-6 text-lg rounded-full font-medium shadow-lg">
+              <Button className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg rounded-full font-medium shadow-lg">
                 Explore Destinations
               </Button>
             </Link>
