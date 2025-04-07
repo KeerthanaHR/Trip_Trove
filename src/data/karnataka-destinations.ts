@@ -1,386 +1,242 @@
+
 export interface Destination {
   id: string;
   name: string;
+  region: string;
+  category: string[];
   description: string;
   shortDescription: string;
+  bestTimeToVisit: string;
   image: string;
   location: {
     lat: number;
     lng: number;
   };
-  region: string;
-  category: string[];
-  bestTimeToVisit: string;
-  thingsToSee: string[];
-  nearbyDestinations: string[];
 }
 
 export const destinations: Destination[] = [
   {
     id: "hampi",
     name: "Hampi",
-    description: "Hampi, a UNESCO World Heritage Site, is an ancient village featuring the ruins of the Vijayanagara Empire. Once one of the richest and largest cities in the world, it's now characterized by its stunning boulder-strewn landscape, ancient temple complexes, and intricate stone carvings that transport visitors back to the 14th century.",
-    shortDescription: "Ancient ruins of the Vijayanagara Empire with stunning boulder landscapes and temple complexes.",
+    region: "North Karnataka",
+    category: ["Heritage", "History", "Architecture"],
+    description: "Hampi, the capital city of the Vijayanagara Empire, is a UNESCO World Heritage Site known for its stunning ruins of temples, palaces, and monuments. Spread across a vast area, this ancient city preserves the magnificent legacy of one of South India's greatest kingdoms. The stone chariot at Vittala Temple, Virupaksha Temple, and the massive Lakshmi Narasimha statue are among the iconic sights that mesmerize visitors. Surrounded by boulder-strewn landscapes, Hampi offers a unique blend of history, spirituality, and natural beauty.",
+    shortDescription: "UNESCO World Heritage Site with stunning ruins of the Vijayanagara Empire",
+    bestTimeToVisit: "October to February",
     image: "https://images.unsplash.com/photo-1605649461784-efd458e87436?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGFtcGklMjBpbmRpYXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
     location: {
       lat: 15.3350,
       lng: 76.4600
-    },
-    region: "Northern Karnataka",
-    category: ["Historical", "UNESCO World Heritage", "Architecture"],
-    bestTimeToVisit: "October to February",
-    thingsToSee: [
-      "Virupaksha Temple",
-      "Vittala Temple with Stone Chariot",
-      "Hemakuta Hill",
-      "Queen's Bath",
-      "Elephant Stables"
-    ],
-    nearbyDestinations: ["badami", "hospet"]
+    }
   },
   {
-    id: "mysore",
+    id: "mysore-palace",
     name: "Mysore Palace",
-    description: "The Mysore Palace, officially known as the Mysuru Palace, is a historical palace and the official residence of the Wadiyar dynasty who ruled the Kingdom of Mysore from 1399 to 1950. The palace is a three-story stone structure with marble domes and a 145-foot five-story tower. The palace is known for its Indo-Saracenic style of architecture which blends Hindu, Muslim, Rajput, and Gothic styles.",
-    shortDescription: "Magnificent historical palace with Indo-Saracenic architecture and opulent interiors.",
+    region: "South Karnataka",
+    category: ["Heritage", "Architecture", "Royal"],
+    description: "The Mysore Palace, officially known as the Mysuru Palace, is the former palace of the royal family of Mysore. It is now one of the most famous tourist attractions in India, after the Taj Mahal, and has more than 6 million annual visitors. The palace was built in 1912 for the 24th Ruler of the Wodeyar Dynasty and is a fine example of Indo-Saracenic architecture. On Sundays and national holidays, the palace is spectacularly illuminated with nearly 100,000 lights, creating a breathtaking golden glow that attracts tourists and locals alike.",
+    shortDescription: "Magnificent royal palace with Indo-Saracenic architecture and spectacular illuminations",
+    bestTimeToVisit: "September to March",
     image: "https://images.unsplash.com/photo-1600100598629-200722fda2fb?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bXlzb3JlJTIwcGFsYWNlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
     location: {
       lat: 12.3052,
       lng: 76.6552
-    },
-    region: "Southern Karnataka",
-    category: ["Historical", "Architecture", "Royal Heritage"],
-    bestTimeToVisit: "September to March",
-    thingsToSee: [
-      "Illuminated Palace (Sundays and holidays)",
-      "Durbar Hall",
-      "Royal Artifacts",
-      "Royal Paintings",
-      "Chamundi Hill"
-    ],
-    nearbyDestinations: ["coorg", "bandipur"]
+    }
   },
   {
-    id: "badami",
+    id: "badami-caves",
     name: "Badami Cave Temples",
-    description: "Badami Cave Temples, formerly known as Vatapi, are a complex of four Hindu, Jain, and possibly Buddhist cave temples located in Badami, Karnataka. The caves, carved out of the soft Badami sandstone on a hill cliff in the late 6th to 7th centuries, feature intricate carvings and sculptures depicting various deities of the Hindu pantheon and are considered important examples of Indian rock-cut architecture.",
-    shortDescription: "Ancient cave temples with intricate carvings from the 6th century featuring Hindu and Jain art.",
+    region: "North Karnataka",
+    category: ["Heritage", "History", "Spirituality"],
+    description: "The Badami Cave Temples are a complex of ancient Hindu and Jain cave temples carved into the red sandstone surroundings of Badami in the 6th and 7th centuries. The caves showcase exceptional examples of Chalukyan architecture and feature intricately carved sculptures and friezes. Each cave is dedicated to different deities, with stunning representations of Vishnu, Shiva, and Mahavira. Beyond the caves, Badami offers the beautiful Agastya Lake surrounded by ancient temples and the impressive Badami Fort on the cliff above.",
+    shortDescription: "Ancient rock-cut temples with magnificent sculptures from the Chalukya era",
+    bestTimeToVisit: "October to March",
     image: "https://images.unsplash.com/photo-1600100598626-28e4078364bd?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmFkYW1pJTIwY2F2ZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
     location: {
-      lat: 15.9199,
-      lng: 75.6873
-    },
-    region: "Northern Karnataka",
-    category: ["Historical", "Architecture", "Religious"],
-    bestTimeToVisit: "October to March",
-    thingsToSee: [
-      "Cave 1 (Shiva Cave)",
-      "Cave 2 (Vishnu Cave)",
-      "Cave 3 (Largest, dedicated to Vishnu)",
-      "Cave 4 (Jain Cave)",
-      "Agastya Lake"
-    ],
-    nearbyDestinations: ["pattadakal", "aihole"]
+      lat: 15.9239,
+      lng: 75.6794
+    }
   },
   {
     id: "coorg",
     name: "Coorg",
-    description: "Coorg, also known as Kodagu, is a rural district in Karnataka state known for its breathtaking landscapes, coffee plantations, and unique culture. Referred to as the 'Scotland of India', Coorg features misty hills, lush forests, and cascading waterfalls. The region is home to the Kodavas, who have a distinct culture and martial traditions.",
-    shortDescription: "Misty hill station with coffee plantations, waterfalls, and lush landscapes known as the Scotland of India.",
+    region: "Western Ghats",
+    category: ["Nature", "Hill Station", "Wildlife"],
+    description: "Coorg, also known as Kodagu, is a misty hill station nestled in the Western Ghats. Famous for its coffee plantations, this region enchants visitors with verdant landscapes, cascading waterfalls, and dense forests. The Abbey Falls, Dubare Elephant Camp, and Raja's Seat (a scenic viewpoint) are popular attractions. Coorg is also home to the Nagarhole National Park, which harbors a rich diversity of wildlife including elephants, tigers, and numerous bird species. The district has a unique Kodava culture known for its hospitality, distinctive cuisine, and martial traditions.",
+    shortDescription: "Misty hill station with coffee plantations, waterfalls, and rich biodiversity",
+    bestTimeToVisit: "October to March",
     image: "https://images.unsplash.com/photo-1580891587477-3ab84d823a39?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y29vcmd8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
     location: {
       lat: 12.4244,
       lng: 75.7382
-    },
-    region: "Western Ghats",
-    category: ["Hill Station", "Nature", "Adventure"],
-    bestTimeToVisit: "October to March",
-    thingsToSee: [
-      "Abbey Falls",
-      "Raja's Seat",
-      "Dubare Elephant Camp",
-      "Namdroling Monastery",
-      "Tadiandamol Peak"
-    ],
-    nearbyDestinations: ["mysore", "wayanad"]
+    }
   },
   {
     id: "gokarna",
     name: "Gokarna",
-    description: "Gokarna is a small temple town on the western coast of India, known for its pristine beaches and Hindu pilgrimage sites. The town is a laid-back alternative to the more commercialized beaches in neighboring states and features a number of beautiful beaches framed by rocky cliffs, clear waters, and sandy shores.",
-    shortDescription: "Temple town with pristine beaches, pilgrimage sites, and a laid-back atmosphere.",
-    image: "https://images.unsplash.com/photo-1580100898243-91624367fcc4?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Z29rYXJuYXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
+    region: "Coastal Karnataka",
+    category: ["Beach", "Spirituality", "Adventure"],
+    description: "Gokarna is a small temple town on the western coast of Karnataka that has become increasingly popular as a beach destination. It is home to ancient temples including the famous Mahabaleshwar Temple with its Atmalinga. What sets Gokarna apart are its pristine beaches - Om Beach (shaped like the Hindu symbol 'Om'), Kudle Beach, Half Moon Beach, and Paradise Beach - each offering a unique experience. The town perfectly balances its spiritual heritage with beach tourism, making it a place where visitors can find both religious significance and relaxed coastal vibes.",
+    shortDescription: "Tranquil coastal town with pristine beaches and ancient temples",
+    bestTimeToVisit: "October to March",
+    image: "https://images.unsplash.com/photo-1584731740820-84ed7653f103?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Z29rYXJuYXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
     location: {
       lat: 14.5479,
       lng: 74.3188
-    },
-    region: "Coastal Karnataka",
-    category: ["Beach", "Pilgrimage", "Nature"],
-    bestTimeToVisit: "October to March",
-    thingsToSee: [
-      "Om Beach",
-      "Half Moon Beach",
-      "Paradise Beach",
-      "Mahabaleshwar Temple",
-      "Kudle Beach"
-    ],
-    nearbyDestinations: ["murudeshwar", "karwar"]
+    }
   },
   {
     id: "bandipur",
     name: "Bandipur National Park",
-    description: "Bandipur National Park is a beautiful wildlife reserve nestled in the foothills of the Nilgiri Mountains. Established in 1974 as a tiger reserve under Project Tiger, it's known for its significant population of Bengal tigers, Indian elephants, spotted deer, and various species of birds. The park features diverse habitats including deciduous forests, shrublands, and riparian forests.",
-    shortDescription: "Wildlife sanctuary known for tigers, elephants, and diverse flora and fauna.",
-    image: "https://images.unsplash.com/photo-1580100898118-dc4752ddc1b8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmFuZGlwdXJ8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-    location: {
-      lat: 11.6700,
-      lng: 76.6338
-    },
-    region: "Southern Karnataka",
+    region: "South Karnataka",
     category: ["Wildlife", "Nature", "Safari"],
+    description: "Bandipur National Park is a major wildlife sanctuary that protects several endangered species including tigers, elephants, and Indian bison. Part of the Nilgiri Biosphere Reserve, this park is covered by deciduous forests and supports diverse flora and fauna. Safari rides through the park offer visitors the chance to spot wildlife in their natural habitat. The park plays a crucial role in conservation efforts and represents one of India's premier tiger reserves. The nearby Himavad Gopalaswamy Hill provides panoramic views of the park and surrounding landscapes.",
+    shortDescription: "Premier tiger reserve with rich biodiversity and safari experiences",
     bestTimeToVisit: "October to May",
-    thingsToSee: [
-      "Bengal Tigers",
-      "Indian Elephants",
-      "Gaur (Indian Bison)",
-      "Jungle Safari",
-      "Gopalaswamy Betta"
-    ],
-    nearbyDestinations: ["mysore", "wayanad"]
+    image: "https://images.unsplash.com/photo-1551527102-acfc74abf147?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmFuZGlwdXJ8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+    location: {
+      lat: 11.6716,
+      lng: 76.6342
+    }
   },
   {
     id: "jog-falls",
     name: "Jog Falls",
-    description: "Jog Falls, created by the Sharavathi River, is the second-highest plunge waterfall in India. Located in the Western Ghats, these segmented falls drop 253 meters (830 feet) in four distinct cascades known locally as Raja, Rani, Rover, and Rocket. During the monsoon season, the falls are at their most spectacular as water thunders down into the valley below.",
-    shortDescription: "India's second-highest plunge waterfall with four magnificent cascades in the Western Ghats.",
-    image: "https://images.unsplash.com/photo-1629995233566-9aaf7a137200?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8am9nJTIwZmFsbHN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
-    location: {
-      lat: 14.2236,
-      lng: 74.7933
-    },
     region: "Western Ghats",
-    category: ["Waterfall", "Nature", "Photography"],
+    category: ["Nature", "Waterfall", "Scenic"],
+    description: "Jog Falls is one of India's tallest waterfalls, where the Sharavathi River plunges from a height of 830 feet (253 meters). Unlike tiered waterfalls, Jog Falls descends in a single drop, creating a spectacular sight especially during the monsoon season when the water flow is at its peak. The falls comprise four distinct cascades - Raja, Rani, Rover, and Rocket - each with its own character and beauty. The surrounding area offers multiple viewpoints to appreciate this natural wonder, along with hiking trails through the lush forests of the Western Ghats.",
+    shortDescription: "India's tallest waterfall with four magnificent cascades",
     bestTimeToVisit: "July to October",
-    thingsToSee: [
-      "The Four Cascades",
-      "Sharavathi Valley",
-      "Linganamakki Dam",
-      "Watkins Platform",
-      "Jog Falls View Point"
-    ],
-    nearbyDestinations: ["gokarna", "murdeshwar"]
+    image: "https://images.unsplash.com/photo-1544156831-c8a1883d3fdd?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8am9nJTIwZmFsbHN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+    location: {
+      lat: 14.2344,
+      lng: 74.7949
+    }
   },
   {
     id: "chikmagalur",
     name: "Chikmagalur",
-    description: "Chikmagalur is a hill station in Karnataka, known for its coffee plantations, lush forests, and mountain views. Located in the foothills of the Mullayanagiri range, it's often called the 'Coffee Land of Karnataka' as it was the place where coffee was first cultivated in India. The region offers pristine trekking routes, wildlife sanctuaries, and a pleasant climate year-round.",
-    shortDescription: "Coffee-growing hill station with lush plantations, mountain peaks, and adventure opportunities.",
-    image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hpa21hZ2FsdXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+    region: "Western Ghats",
+    category: ["Hill Station", "Nature", "Coffee"],
+    description: "Chikmagalur is a picturesque hill station known as the 'Coffee Land of Karnataka' for its vast coffee estates that dot the landscape. It offers breathtaking views of the Western Ghats and is home to peaks like Mullayanagiri (Karnataka's highest peak) and Baba Budangiri. Adventure enthusiasts can enjoy trekking, while nature lovers can explore the region's diverse flora and fauna. The area's pleasant climate, combined with the aroma of coffee plantations and stunning viewpoints like Kemmangundi and Z Point, make Chikmagalur a refreshing retreat from urban life.",
+    shortDescription: "Coffee country with lush plantations and the highest peaks in Karnataka",
+    bestTimeToVisit: "September to May",
+    image: "https://images.unsplash.com/photo-1622308644420-b20142dc993c?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y2hpa21hZ2FsdXJ8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
     location: {
       lat: 13.3161,
       lng: 75.7720
-    },
-    region: "Western Ghats",
-    category: ["Hill Station", "Nature", "Adventure"],
-    bestTimeToVisit: "September to May",
-    thingsToSee: [
-      "Mullayanagiri Peak",
-      "Baba Budangiri",
-      "Hebbe Falls",
-      "Coffee Plantations",
-      "Kudremukh National Park"
-    ],
-    nearbyDestinations: ["coorg", "shimoga"]
+    }
   },
   {
     id: "murudeshwar",
     name: "Murudeshwar",
-    description: "Murudeshwar is a coastal town famous for housing the world's second-tallest Shiva statue (123 feet) overlooking the Arabian Sea. The town is centered around the Murudeshwar Temple which sits on a hill surrounded by the sea on three sides. The combination of religious significance, spectacular architecture, and beautiful beaches makes it a popular destination.",
-    shortDescription: "Coastal temple town with the world's second-tallest Shiva statue overlooking the Arabian Sea.",
-    image: "https://images.unsplash.com/photo-1621532933396-41493bc17c88?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bXVydWRlc2h3YXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
-    location: {
-      lat: 14.0940,
-      lng: 74.4869
-    },
     region: "Coastal Karnataka",
-    category: ["Religious", "Beach", "Architecture"],
+    category: ["Beach", "Spirituality", "Architecture"],
+    description: "Murudeshwar is renowned for housing the world's second-tallest Shiva statue (123 feet) overlooking the Arabian Sea. The statue is part of the Murudeshwar Temple complex situated on a hill called Kanduka Giri. The temple's 20-story gopura (tower) provides panoramic views of the coastline and is a significant architectural achievement. Beyond its religious importance, Murudeshwar offers beautiful beaches for relaxation and water sports. The surrounding waters are ideal for scuba diving and snorkeling, with rich marine life and clear visibility making it a growing center for underwater exploration in Karnataka.",
+    shortDescription: "Coastal town featuring the world's second-tallest Shiva statue and pristine beaches",
     bestTimeToVisit: "October to May",
-    thingsToSee: [
-      "Shiva Statue",
-      "Murudeshwar Temple",
-      "Murudeshwar Beach",
-      "Gopura (Raja Gopura)",
-      "Netrani Island"
-    ],
-    nearbyDestinations: ["gokarna", "jog-falls"]
+    image: "https://images.unsplash.com/photo-1623776025811-0fac82759617?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bXVydWRlc2h3YXJ8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+    location: {
+      lat: 14.0943,
+      lng: 74.4882
+    }
   },
   {
     id: "udupi",
     name: "Udupi",
-    description: "Udupi is a coastal city known for its Krishna Temple, distinctive cuisine, and beautiful beaches. It's one of the seven holy cities of Hinduism and a major pilgrimage site. Besides its religious significance, Udupi is famous for its vegetarian cuisine, which has influenced South Indian restaurants worldwide. The city blends spirituality, culture, and natural beauty.",
-    shortDescription: "Coastal temple town famous for Krishna Temple, distinctive cuisine, and beautiful beaches.",
-    image: "https://images.unsplash.com/photo-1606298855672-3efb63017be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dWR1cGl8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+    region: "Coastal Karnataka",
+    category: ["Heritage", "Cuisine", "Beach"],
+    description: "Udupi is famous for the Krishna Temple (Krishna Matha), founded by Madhvacharya, the proponent of Dvaita philosophy. The temple is known for its unique tradition of worship and the 'Kanakana Kindi', a small window through which Lord Krishna is said to have revealed himself to his devotee. Beyond its religious significance, Udupi is renowned for its distinctive cuisine that has spread worldwide. The region also features beautiful beaches like Malpe and St. Mary's Island, known for its unique hexagonal basalt rock formations. Udupi offers a harmonious blend of spirituality, culinary excellence, and coastal beauty.",
+    shortDescription: "Temple town known for Krishna Matha, distinctive cuisine, and beautiful beaches",
+    bestTimeToVisit: "October to March",
+    image: "https://images.unsplash.com/photo-1590338260802-a968b4b40d67?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dWR1cGl8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
     location: {
       lat: 13.3409,
       lng: 74.7421
-    },
-    region: "Coastal Karnataka",
-    category: ["Religious", "Cuisine", "Beach"],
-    bestTimeToVisit: "October to March",
-    thingsToSee: [
-      "Sri Krishna Temple",
-      "Malpe Beach",
-      "St. Mary's Island",
-      "Kaup Beach & Lighthouse",
-      "Manipal Museum"
-    ],
-    nearbyDestinations: ["mangalore", "murudeshwar"]
+    }
   },
   {
     id: "belur",
     name: "Belur",
-    description: "Belur is an ancient temple town known for its magnificent Chennakeshava Temple, a masterpiece of Hoysala architecture. Built in the 12th century, the temple is adorned with intricate carvings depicting scenes from Hindu mythology. Every inch of the temple's exterior is covered with sculptures, making it one of the finest examples of Hindu temple architecture in India.",
-    shortDescription: "Ancient temple town featuring the exquisite Chennakeshava Temple with remarkable Hoysala architecture.",
-    image: "https://images.unsplash.com/photo-1628961200491-89e4b3c8ca9f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmVsdXIlMjBjaGVubmFrZXNoYXZhfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
-    location: {
-      lat: 13.1650,
-      lng: 75.8648
-    },
     region: "Central Karnataka",
-    category: ["Historical", "Architecture", "Religious"],
+    category: ["Heritage", "Architecture", "History"],
+    description: "Belur, once the capital of the Hoysala Empire, is home to the Chennakesava Temple, a masterpiece of Hoysala architecture. Built by King Vishnuvardhana in the 12th century, this temple is adorned with intricate sculptures and friezes depicting scenes from Hindu mythology. The elaborate artwork showcases extraordinary craftsmanship, with no two sculptures being identical. The temple stands on a star-shaped platform and features detailed bracket figures of celestial nymphs or 'Madanikas' in various poses. Belur, along with nearby Halebidu, represents the pinnacle of artistic achievement during the Hoysala era.",
+    shortDescription: "Ancient Hoysala capital with the magnificent Chennakesava Temple",
     bestTimeToVisit: "October to March",
-    thingsToSee: [
-      "Chennakeshava Temple",
-      "Kappe Chennigaraya Temple",
-      "Veera Narayana Temple",
-      "Archaeological Museum",
-      "Yagachi Dam"
-    ],
-    nearbyDestinations: ["halebidu", "chikmagalur"]
+    image: "https://images.unsplash.com/photo-1643382255428-e644761163a1?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmVsdXIlMjBob3lzYWxhfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
+    location: {
+      lat: 13.1654,
+      lng: 75.8648
+    }
   },
   {
     id: "halebidu",
     name: "Halebidu",
-    description: "Halebidu, meaning 'old city', was the ancient capital of the Hoysala Empire. The town is home to the stunning Hoysaleshwara Temple, built in the 12th century. The temple is known for its star-shaped design and detailed sculptures depicting Hindu mythology, celestial dancers, animals, and geometric patterns. The craftsmanship displayed in these carvings is considered some of the finest in Indian art.",
-    shortDescription: "Ancient Hoysala capital featuring the intricate Hoysaleshwara Temple with stunning stone carvings.",
-    image: "https://images.unsplash.com/photo-1623145849731-06f8d34b3de0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGFsZWJpZHUlMjB0ZW1wbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
-    location: {
-      lat: 13.2128,
-      lng: 75.9985
-    },
     region: "Central Karnataka",
-    category: ["Historical", "Architecture", "Religious"],
+    category: ["Heritage", "Architecture", "History"],
+    description: "Halebidu, formerly known as Dwarasamudra, was the capital of the Hoysala Empire in the 12th century. Its crown jewel is the Hoysaleswara Temple, dedicated to Lord Shiva, which exemplifies the exquisite craftsmanship of Hoysala artisans. The temple walls are covered with an astonishing variety of sculptures depicting gods, goddesses, animals, birds, and scenes from daily life. The intricate stone carvings include detailed portrayals of dancers, musicians, mythological narratives, and geometric designs. Though the city was ransacked by invaders in the 14th century (hence the name Halebidu, meaning 'old city'), the temples stand as a testament to the artistic legacy of the Hoysala dynasty.",
+    shortDescription: "Former Hoysala capital with the ornate Hoysaleswara Temple",
     bestTimeToVisit: "October to March",
-    thingsToSee: [
-      "Hoysaleshwara Temple",
-      "Kedareshwara Temple",
-      "Basadi Halli (Jain Temples)",
-      "Archaeological Museum",
-      "Dwarasamudra Lake"
-    ],
-    nearbyDestinations: ["belur", "chikmagalur"]
+    image: "https://images.unsplash.com/photo-1599493056649-1b4beef11c8c?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGFsZWJpZHV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+    location: {
+      lat: 13.2124,
+      lng: 75.9960
+    }
   },
   {
     id: "pattadakal",
     name: "Pattadakal",
-    description: "Pattadakal, a UNESCO World Heritage Site, is a historic complex of 7th and 8th-century temples that showcase the blending of northern and southern Indian architectural styles. This cultural fusion makes it a unique architectural laboratory where different temple building styles converged. The site served as a ceremonial center where Chalukya kings were crowned.",
-    shortDescription: "UNESCO site with a magnificent complex of temples blending northern and southern architectural styles.",
-    image: "https://images.unsplash.com/photo-1613375772563-af532af5cef9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGF0dGFkYWthbHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+    region: "North Karnataka",
+    category: ["Heritage", "Architecture", "UNESCO"],
+    description: "Pattadakal, a UNESCO World Heritage Site, showcases a remarkable blend of North Indian Nagara and South Indian Dravidian architectural styles in its complex of 7th and 8th-century temples. It served as the cultural capital and coronation place for the Chalukya kings. The Virupaksha Temple, built by Queen Lokamahadevi to commemorate her husband's victory over the Pallavas, is the largest and most impressive structure in the complex. The site demonstrates the evolution of temple architecture during the Chalukya period and represents an outstanding artistic achievement. Together with nearby Aihole and Badami, Pattadakal forms part of the triumvirate of early Chalukyan art.",
+    shortDescription: "UNESCO site featuring a harmonious blend of northern and southern architectural styles",
+    bestTimeToVisit: "October to March",
+    image: "https://images.unsplash.com/photo-1626108870272-1af94703f956?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGF0dGFkYWthbHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
     location: {
       lat: 15.9500,
       lng: 75.8167
-    },
-    region: "Northern Karnataka",
-    category: ["UNESCO World Heritage", "Historical", "Architecture"],
-    bestTimeToVisit: "October to March",
-    thingsToSee: [
-      "Virupaksha Temple",
-      "Mallikarjuna Temple",
-      "Papanatha Temple",
-      "Sangameshwara Temple",
-      "Galaganatha Temple"
-    ],
-    nearbyDestinations: ["badami", "aihole"]
+    }
   },
   {
     id: "aihole",
     name: "Aihole",
-    description: "Known as the 'Cradle of Indian Temple Architecture', Aihole contains over 125 temples dating from the 5th to 8th centuries. It was an experimental ground where architects developed different styles of temple construction that influenced later Indian architecture. The temples showcase early Chalukyan, Dravidian, and Nagara architectural styles with beautiful carvings and structural innovations.",
-    shortDescription: "Ancient architectural laboratory with over 125 temples showcasing early Indian temple design styles.",
-    image: "https://images.unsplash.com/photo-1626889861789-f328f40c1255?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YWlob2xlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
-    location: {
-      lat: 16.0200,
-      lng: 75.8800
-    },
-    region: "Northern Karnataka",
-    category: ["Historical", "Architecture", "Religious"],
+    region: "North Karnataka",
+    category: ["Heritage", "Architecture", "History"],
+    description: "Known as the 'Cradle of Indian Temple Architecture', Aihole has over 125 stone temples dating from the 4th to the 12th century. It served as an experimental ground where Chalukyan architects evolved their early temple styles before implementing them in Badami and Pattadakal. The Durga Temple (named for its fortress-like appearance, not the goddess) is the most famous, with its unique apsidal design. Other notable structures include the Lad Khan Temple, Huchimalli Temple, and the Buddhist chaitya-style Durga Temple. The Archaeological Museum in Aihole houses sculptures and artifacts that offer insights into the artistic developments of the Chalukyan era.",
+    shortDescription: "Experimental ground for early Hindu temple architecture with over 125 stone temples",
     bestTimeToVisit: "October to March",
-    thingsToSee: [
-      "Durga Temple",
-      "Ladkhan Temple",
-      "Meguti Jain Temple",
-      "Huchimalli Temple",
-      "Archaeological Museum"
-    ],
-    nearbyDestinations: ["pattadakal", "badami"]
+    image: "https://images.unsplash.com/photo-1623394999771-e6c1b98cf714?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YWlob2xlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
+    location: {
+      lat: 16.0239,
+      lng: 75.8818
+    }
   },
   {
     id: "kudremukh",
     name: "Kudremukh",
-    description: "Kudremukh, meaning 'horse face' in Kannada, is named after a mountain peak that resembles a horse's face. This national park in the Western Ghats is known for its lush green forests, rolling hills, and diverse wildlife. The area is a biodiversity hotspot with endemic species of plants and animals, making it a paradise for nature lovers and trekkers.",
-    shortDescription: "Mountain national park with horse-face peak, lush forests, and rich biodiversity in the Western Ghats.",
-    image: "https://images.unsplash.com/photo-1596436889106-be35e843f974?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8a3VkcmVtdWtofGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
-    location: {
-      lat: 13.2222,
-      lng: 75.1807
-    },
     region: "Western Ghats",
     category: ["Nature", "Trekking", "Wildlife"],
+    description: "Kudremukh, meaning 'horse face' in Kannada (named after a mountain shape resembling a horse's face), is a mountain range and national park in the Western Ghats. The region is characterized by dense forests, rolling meadows, and pristine streams, making it one of Karnataka's most biodiverse areas. The trek to Kudremukh peak (1,892 meters) is challenging but rewarding, offering stunning views of the Lakya Dam, Shola forests, and surrounding landscapes. The national park protects numerous endangered species including lion-tailed macaques, tigers, and King Cobras. The Kadambi Waterfalls and Hanuman Gundi Falls are popular attractions around Kudremukh.",
+    shortDescription: "Biodiverse national park with challenging treks and lush landscapes",
     bestTimeToVisit: "October to May",
-    thingsToSee: [
-      "Kudremukh Peak",
-      "Hanuman Gundi Falls",
-      "Gangamoola",
-      "Kadambi Falls",
-      "Lakya Dam"
-    ],
-    nearbyDestinations: ["chikmagalur", "udupi"]
+    image: "https://images.unsplash.com/photo-1594476664596-afb01c2d249e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8a3VkcmVtdWtofGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
+    location: {
+      lat: 13.1923,
+      lng: 75.2698
+    }
   },
   {
     id: "kabini",
     name: "Kabini",
-    description: "Kabini is a popular wildlife destination located at the edge of Nagarhole National Park. Named after the River Kabini, this region is famous for its wildlife safaris that offer opportunities to spot tigers, leopards, elephants, and various species of deer. The picturesque landscape with the backdrop of the Brahmagiri mountains makes it a photographer's paradise.",
-    shortDescription: "Wildlife sanctuary by the Kabini River offering exceptional safari experiences to spot diverse wildlife.",
-    image: "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8ZWxlcGhhbnQlMjBpbmRpYXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
-    location: {
-      lat: 11.9456,
-      lng: 76.3540
-    },
-    region: "Southern Karnataka",
+    region: "South Karnataka",
     category: ["Wildlife", "Safari", "Nature"],
+    description: "Kabini, named after the river that flows through it, is one of India's premier wildlife destinations. Part of the Nagarhole National Park, it's known for its high density of Asian elephants and leopards. The Kabini backwaters, formed by the Kabini Dam, attract large herds of elephants during summer, creating spectacular sighting opportunities. Safari options include jeep drives and boat rides, each offering different wildlife viewing experiences. The area supports diverse ecosystems including deciduous forests and water bodies, creating habitats for varied species including tigers, gaur, wild dogs, and over 250 bird species. Luxury eco-resorts around Kabini provide comfortable bases for wildlife exploration.",
+    shortDescription: "Premier wildlife destination with abundant elephants, leopards, and boat safaris",
     bestTimeToVisit: "October to May",
-    thingsToSee: [
-      "Jungle Safari",
-      "Boat Safari",
-      "Elephant Camp",
-      "Bird Watching",
-      "Kabini Dam"
-    ],
-    nearbyDestinations: ["bandipur", "wayanad"]
+    image: "https://images.unsplash.com/photo-1591790718936-948f8366f5c5?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8a2FiaW5pfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
+    location: {
+      lat: 11.9876,
+      lng: 76.3543
+    }
   }
 ];
-
-export const getDestinationById = (id: string): Destination | undefined => {
-  return destinations.find(destination => destination.id === id);
-};
-
-export const getDestinationByName = (name: string): Destination | undefined => {
-  return destinations.find(destination => destination.name.toLowerCase() === name.toLowerCase());
-};
-
-export const getNearbyDestinations = (id: string): Destination[] => {
-  const destination = getDestinationById(id);
-  if (!destination) return [];
-  
-  return destinations.filter(d => destination.nearbyDestinations.includes(d.id));
-};

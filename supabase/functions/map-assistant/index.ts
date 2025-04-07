@@ -1,6 +1,5 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.1.1";
 import { corsHeaders } from "../_shared/cors.ts";
 
 serve(async (req) => {
@@ -37,7 +36,7 @@ serve(async (req) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4o-mini',
           messages: [
             {
               role: 'system',

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -6,10 +5,29 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MessageSquare, BookOpen, Calendar, Users, Clock, MapPin, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
 
 const Community = () => {
-  // Sample data for community features
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const handleCreatePost = () => {
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "Please sign in to create a post",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
+    
+    navigate('/create-post');
+  };
+  
   const forumTopics = [
     {
       id: 1,
@@ -114,7 +132,6 @@ const Community = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
-        {/* Hero Banner */}
         <div className="relative h-[30vh] min-h-[250px] w-full overflow-hidden">
           <div className="absolute inset-0 bg-cover bg-center" 
             style={{ 
@@ -135,7 +152,6 @@ const Community = () => {
           </div>
         </div>
         
-        {/* Community Hub Section */}
         <section className="py-12 bg-secondary">
           <div className="container mx-auto px-4">
             <Tabs defaultValue="forums" className="w-full">
@@ -155,12 +171,14 @@ const Community = () => {
                   </TabsTrigger>
                 </TabsList>
                 
-                <Button className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white hidden md:flex">
+                <Button 
+                  className="bg-amber-600 hover:bg-amber-700 text-white hidden md:flex"
+                  onClick={handleCreatePost}
+                >
                   Create Post
                 </Button>
               </div>
               
-              {/* Forums Tab */}
               <TabsContent value="forums">
                 <Card>
                   <CardHeader>
@@ -171,7 +189,10 @@ const Community = () => {
                           Join conversations, ask questions, and share advice with fellow travelers
                         </CardDescription>
                       </div>
-                      <Button className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white md:hidden">
+                      <Button 
+                        className="bg-amber-600 hover:bg-amber-700 text-white md:hidden"
+                        onClick={handleCreatePost}
+                      >
                         Create Post
                       </Button>
                     </div>
@@ -215,7 +236,6 @@ const Community = () => {
                 </Card>
               </TabsContent>
               
-              {/* Travel Stories Tab */}
               <TabsContent value="stories">
                 <Card>
                   <CardHeader>
@@ -226,7 +246,10 @@ const Community = () => {
                           Read and share personal travel experiences from Karnataka adventures
                         </CardDescription>
                       </div>
-                      <Button className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white md:hidden">
+                      <Button 
+                        className="bg-amber-600 hover:bg-amber-700 text-white md:hidden"
+                        onClick={handleCreatePost}
+                      >
                         Share Your Story
                       </Button>
                     </div>
@@ -281,7 +304,6 @@ const Community = () => {
                 </Card>
               </TabsContent>
               
-              {/* Events & Meetups Tab */}
               <TabsContent value="events">
                 <Card>
                   <CardHeader>
@@ -292,7 +314,10 @@ const Community = () => {
                           Join upcoming travel events, workshops, and community gatherings
                         </CardDescription>
                       </div>
-                      <Button className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white md:hidden">
+                      <Button 
+                        className="bg-amber-600 hover:bg-amber-700 text-white md:hidden"
+                        onClick={handleCreatePost}
+                      >
                         Create Event
                       </Button>
                     </div>
@@ -343,7 +368,6 @@ const Community = () => {
                 </Card>
               </TabsContent>
               
-              {/* School & College Groups Tab */}
               <TabsContent value="groups">
                 <Card>
                   <CardHeader>

@@ -10,19 +10,13 @@ schemas = ["public", "storage", "graphql_public"]
 port = 54322
 
 [studio]
-port = 54323
-
-[inbucket]
-port = 54324
-
-[auth]
 enabled = true
-site_url = "http://localhost:5173"
+port = 54323
+inmemory = false
 
-[functions]
+[[storage.buckets]]
+name = "posts"
+public = true
+
 [functions.map-assistant]
 verify_jwt = false
-
-[functions.save-trip]
-verify_jwt = true
-
