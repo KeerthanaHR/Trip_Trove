@@ -13,7 +13,9 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
-        <HeroSection />
+        <HeroSection 
+          backgroundImage="https://images.unsplash.com/photo-1605649461784-efd458e87436?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGFtcGklMjBpbmRpYXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
+        />
         <FeaturedDestinations />
         <MapSection />
         <CommunitySection />
