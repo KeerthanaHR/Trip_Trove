@@ -11,7 +11,8 @@ export interface Place {
   lng: number;
 }
 
-export function calculateOptimalRoute(places: Place[]): Place[] {
+// Renamed to match the import in SchoolCollegeTrips.tsx
+export function optimizeRoute(places: Place[]): Place[] {
   // If fewer than 3 places, just return the original order
   if (places.length < 3) return places;
   

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -26,9 +27,14 @@ const CreatePost = () => {
   // Redirect if not logged in
   React.useEffect(() => {
     if (!loading && !user) {
+      toast({
+        title: "Login required",
+        description: "Please log in to create a post",
+        variant: "destructive"
+      });
       navigate('/auth');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, toast]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -72,33 +78,45 @@ const CreatePost = () => {
       
       // Upload image if one was selected
       if (imageFile) {
-        // First, check if the posts bucket exists, if not create it
-        const { data: buckets } = await supabase.storage.listBuckets();
-        const postsBucketExists = buckets?.some(bucket => bucket.name === 'posts');
-        
-        if (!postsBucketExists) {
-          await supabase.storage.createBucket('posts', {
-            public: true,
-            fileSizeLimit: 10485760 // 10MB
+        try {
+          // Check if the bucket exists
+          const { data: buckets } = await supabase.storage.listBuckets();
+          const postsBucketExists = buckets?.some(bucket => bucket.name === 'posts');
+          
+          if (!postsBucketExists) {
+            const { error: bucketError } = await supabase.storage.createBucket('posts', {
+              public: true,
+              fileSizeLimit: 10485760 // 10MB
+            });
+            
+            if (bucketError) throw bucketError;
+          }
+          
+          // Upload the image
+          const fileExt = imageFile.name.split('.').pop();
+          const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('posts')
+            .upload(fileName, imageFile);
+            
+          if (uploadError) throw uploadError;
+          
+          // Get the public URL
+          const { data: urlData } = supabase.storage
+            .from('posts')
+            .getPublicUrl(fileName);
+            
+          imageUrl = urlData.publicUrl;
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          toast({
+            title: "Image upload failed",
+            description: error instanceof Error ? error.message : "Unknown error",
+            variant: "destructive"
           });
+          // Continue without the image
         }
-        
-        // Upload the image
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('posts')
-          .upload(fileName, imageFile);
-          
-        if (uploadError) throw uploadError;
-        
-        // Get the public URL
-        const { data: urlData } = supabase.storage
-          .from('posts')
-          .getPublicUrl(fileName);
-          
-        imageUrl = urlData.publicUrl;
       }
       
       // Create the post
@@ -140,13 +158,13 @@ const CreatePost = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-lg text-teal-600">Loading...</div>
+        <div className="animate-pulse text-lg text-amber-600">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-amber-50/30">
       <Navbar />
       <main className="flex-grow">
         <div className="relative h-[30vh] min-h-[200px] w-full overflow-hidden">
@@ -156,7 +174,7 @@ const CreatePost = () => {
               backgroundImage: "url('https://images.unsplash.com/photo-1516483638261-f4dbaf036963?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80')" 
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-teal-900/70 to-teal-800/70"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-amber-900/70 to-amber-800/70"></div>
           </div>
           
           <div className="container relative h-full mx-auto px-4 flex flex-col justify-center">
@@ -199,7 +217,7 @@ const CreatePost = () => {
                     Location
                   </label>
                   <div className="flex items-center">
-                    <MapPin className="h-5 w-5 text-teal-600 mr-2" />
+                    <MapPin className="h-5 w-5 text-amber-600 mr-2" />
                     <Input
                       id="location"
                       value={location}
@@ -249,7 +267,7 @@ const CreatePost = () => {
                     </div>
                   ) : (
                     <div 
-                      className="border-2 border-dashed border-gray-300 rounded-md p-12 text-center hover:border-teal-500 transition-colors cursor-pointer"
+                      className="border-2 border-dashed border-gray-300 rounded-md p-12 text-center hover:border-amber-500 transition-colors cursor-pointer"
                       onClick={() => document.getElementById('image-upload')?.click()}
                     >
                       <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -282,7 +300,7 @@ const CreatePost = () => {
                   </Button>
                   <Button 
                     type="submit"
-                    className="bg-teal-600 hover:bg-teal-700"
+                    className="bg-amber-600 hover:bg-amber-700 text-white"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
