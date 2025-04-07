@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, MapPin } from 'lucide-react';
 
 const FeaturedDestinations = () => {
-  // Choose a subset of destinations to feature - one from each region if possible
+  // Choose destinations that have images
   const featuredDestinations = destinations
-    .filter(d => d.image && d.image.length > 0) // Ensure they have images
+    .filter(d => d.image && d.image.length > 0)
     .slice(0, 3);
 
   return (

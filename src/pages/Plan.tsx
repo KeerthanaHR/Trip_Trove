@@ -3,7 +3,6 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MapSection from '@/components/MapSection';
-import TripBudgetCalculator from '@/components/TripBudgetCalculator';
 import AIMapAssistant from '@/components/AIMapAssistant';
 
 const Plan = () => {
@@ -21,10 +20,10 @@ const Plan = () => {
           
           <div className="container relative h-full mx-auto px-4 flex flex-col justify-center">
             <div className="max-w-2xl text-white">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 Plan Your Karnataka Adventure
               </h1>
-              <p className="text-lg md:text-xl mb-6 text-gray-100 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <p className="text-lg md:text-xl mb-6 text-gray-100">
                 Create custom itineraries, calculate your travel budget, and find the optimal routes for your journey.
               </p>
             </div>
@@ -33,7 +32,6 @@ const Plan = () => {
         
         <AIMapAssistant />
         <MapSection />
-        <TripBudgetCalculator />
       </main>
       <Footer />
     </div>

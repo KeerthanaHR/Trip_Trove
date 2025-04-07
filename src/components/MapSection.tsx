@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { destinations } from '@/data/karnataka-destinations';
 import { calculateOptimalRoute, calculateTotalDistance, estimateTotalTravelTime, Place } from '@/utils/routeCalculator';
-import { MapPin, Navigation, Clock, RotateCw, Save, Share } from 'lucide-react';
+import { MapPin, Navigation, Clock, RotateCw, Save, Share, ArrowRight } from 'lucide-react';
 import { destinationsToPlaces, getDistance } from '@/utils/mapHelpers';
+import { useToast } from '@/components/ui/use-toast';
 
 // Create a more interactive map component
 const InteractiveMap = ({ selectedDestinations, optimalRoute }) => {
@@ -103,8 +104,9 @@ const MapSection: React.FC<MapSectionProps> = ({
   const [selectedDestinations, setSelectedDestinations] = useState<typeof destinations>([]);
   const [optimalRoute, setOptimalRoute] = useState<typeof destinations>([]);
   const [totalDistance, setTotalDistance] = useState(0);
+  const { toast } = useToast();
   
-  // Mock selection of destinations for the demo
+  // Handle destination selection
   const handleDestinationSelect = (destination: (typeof destinations)[0]) => {
     setSelectedDestinations(prev => {
       // Check if already selected
@@ -136,6 +138,14 @@ const MapSection: React.FC<MapSectionProps> = ({
       setTotalDistance(0);
     }
   }, [selectedDestinations]);
+  
+  // Handle save route action
+  const handleSaveRoute = () => {
+    toast({
+      title: "Route Saved",
+      description: "Your optimal route has been saved to your profile.",
+    });
+  };
   
   return (
     <section className="py-16 bg-teal-50/50">
@@ -169,7 +179,15 @@ const MapSection: React.FC<MapSectionProps> = ({
                       }`}
                       onClick={() => handleDestinationSelect(destination)}
                     >
-                      <MapPin className="h-5 w-5 shrink-0" />
+                      {destination.image && (
+                        <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+                          <img 
+                            src={destination.image} 
+                            alt={destination.name}
+                            className="w-full h-full object-cover" 
+                          />
+                        </div>
+                      )}
                       <div>
                         <h4 className="font-medium">{destination.name}</h4>
                         <p className={`text-xs ${selectedDestinations.some(d => d.id === destination.id) ? 'text-white/80' : 'text-gray-500'}`}>
@@ -281,11 +299,14 @@ const MapSection: React.FC<MapSectionProps> = ({
                 <div>
                   <h4 className="font-medium mb-4 text-lg text-teal-800">Actions</h4>
                   <div className="space-y-3">
-                    <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white">
+                    <Button 
+                      onClick={handleSaveRoute}
+                      className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                    >
                       <Save className="mr-2 h-4 w-4" /> Save This Itinerary
                     </Button>
                     <Button variant="outline" className="w-full border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white">
-                      View Transportation Options
+                      <ArrowRight className="mr-2 h-4 w-4" /> Start Navigation
                     </Button>
                     <Button variant="secondary" className="w-full">
                       <Share className="mr-2 h-4 w-4" /> Share Route
