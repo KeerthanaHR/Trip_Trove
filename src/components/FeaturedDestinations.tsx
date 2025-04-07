@@ -1,15 +1,16 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { destinations } from '@/data/karnataka-destinations';
+import { allDestinations } from '@/data/karnataka-destinations';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MapPin } from 'lucide-react';
 
 const FeaturedDestinations = () => {
   // Choose destinations that have images
-  const featuredDestinations = destinations
+  const featuredDestinations = allDestinations
     .filter(d => d.image && d.image.length > 0)
+    .sort(() => 0.5 - Math.random())
     .slice(0, 3);
 
   return (

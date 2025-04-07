@@ -1,4 +1,5 @@
-import { destinations, Destination } from '@/data/karnataka-destinations';
+
+import { allDestinations, Destination } from '@/data/karnataka-destinations';
 import { Place } from '@/utils/routeCalculator';
 
 export function destinationsToPlaces(destinationsList: Destination[]): Place[] {
@@ -144,5 +145,5 @@ export function getDistance(from: string, to: string): number {
 }
 
 export function getAllPlaces(): Place[] {
-  return destinationsToPlaces(destinations);
+  return destinationsToPlaces(allDestinations);
 }

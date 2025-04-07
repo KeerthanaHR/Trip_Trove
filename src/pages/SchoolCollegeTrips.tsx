@@ -1,124 +1,152 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
-import { School, GraduationCap, Bus, Calendar, Users, Clock, MapPin, DollarSign } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { destinations } from '@/data/karnataka-destinations';
-import { calculateOptimalRoute, calculateTotalDistance, estimateTotalTravelTime, Place } from '@/utils/routeCalculator';
+import { Slider } from '@/components/ui/slider';
+import { allDestinations } from '@/data/karnataka-destinations';
+import { optimizeRoute, Place } from '@/utils/routeCalculator';
 import { destinationsToPlaces } from '@/utils/mapHelpers';
+import { Bus, Car, Calendar, Clock, MapPin, School, Users, CreditCard } from 'lucide-react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// Set your Mapbox token
-mapboxgl.accessToken = Deno.env.get('MAPBOX_API_KEY') || '';
-
 const SchoolCollegeTrips = () => {
-  const { toast } = useToast();
-  const [selectedTab, setSelectedTab] = useState('school');
-  const [selectedDestinations, setSelectedDestinations] = useState<typeof destinations>([]);
-  const [numStudents, setNumStudents] = useState(50);
-  const [days, setDays] = useState(3);
+  // Initialize state variables
+  const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
   const [optimizedRoute, setOptimizedRoute] = useState<Place[]>([]);
-  const [mapInstance, setMapInstance] = useState<mapboxgl.Map | null>(null);
-  const [formData, setFormData] = useState({
-    institutionName: '',
-    contactPerson: '',
-    email: '',
-    phone: '',
-    departureDate: '',
-    additionalNotes: '',
-    transportType: 'bus',
-  });
-
-  // Initialize map
+  const [startLocation, setStartLocation] = useState<string>('Bangalore');
+  const [duration, setDuration] = useState<number>(3);
+  const [budget, setBudget] = useState<number>(1000);
+  const [transportation, setTransportation] = useState<string>('bus');
+  const [studentCount, setStudentCount] = useState<number>(30);
+  const [tripType, setTripType] = useState<string>('educational');
+  const [mapInitialized, setMapInitialized] = useState(false);
+  
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+  
+  // Get all available places for selection
+  const availablePlaces = destinationsToPlaces(allDestinations);
+  
+  // Function to handle destination selection
+  const toggleDestination = (id: string) => {
+    setSelectedDestinations(prev => 
+      prev.includes(id) 
+        ? prev.filter(d => d !== id) 
+        : [...prev, id]
+    );
+  };
+  
+  // Function to calculate optimized route
+  const calculateRoute = () => {
+    const selectedPlaces = availablePlaces.filter(place => 
+      selectedDestinations.includes(place.id)
+    );
+    
+    // Add starting location
+    const startingPlace: Place = {
+      id: 'start',
+      name: startLocation,
+      lat: 12.9716,  // Default Bangalore coordinates
+      lng: 77.5946
+    };
+    
+    const places = [startingPlace, ...selectedPlaces];
+    const result = optimizeRoute(places);
+    setOptimizedRoute(result);
+  };
+  
+  // Initialize map when component mounts
   useEffect(() => {
-    if (!mapboxgl.accessToken) return;
-    
-    const mapContainer = document.getElementById('tripMap');
-    if (!mapContainer || mapInstance) return;
-    
-    const map = new mapboxgl.Map({
-      container: 'tripMap',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [76.5, 13.5], // Center of Karnataka approximately
-      zoom: 6,
-    });
-    
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    
-    map.on('load', () => {
-      setMapInstance(map);
-    });
+    if (mapContainer.current && !map.current) {
+      const MAPBOX_API_KEY = process.env.MAPBOX_API_KEY || '';
+      
+      mapboxgl.accessToken = MAPBOX_API_KEY;
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [76.5, 14.5], // Center of Karnataka
+        zoom: 6
+      });
+      
+      map.current.addControl(new mapboxgl.NavigationControl());
+      
+      map.current.on('load', () => {
+        setMapInitialized(true);
+      });
+    }
     
     return () => {
-      map.remove();
-      setMapInstance(null);
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
   }, []);
   
-  // Update map with optimized route
+  // Update map when optimized route changes
   useEffect(() => {
-    if (!mapInstance || optimizedRoute.length < 2) return;
-    
-    // Clear previous layers and sources
-    if (mapInstance.getLayer('route-line')) {
-      mapInstance.removeLayer('route-line');
-    }
-    if (mapInstance.getSource('route')) {
-      mapInstance.removeSource('route');
-    }
-    
-    // Clear previous markers
-    document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
-    
-    // Add markers for each destination
-    optimizedRoute.forEach((place, index) => {
-      const el = document.createElement('div');
-      el.className = 'marker';
-      el.style.backgroundColor = index === 0 ? '#10b981' : '#f97316';
-      el.style.width = '30px';
-      el.style.height = '30px';
-      el.style.borderRadius = '50%';
-      el.style.display = 'flex';
-      el.style.justifyContent = 'center';
-      el.style.alignItems = 'center';
-      el.style.color = 'white';
-      el.style.fontWeight = 'bold';
-      el.style.boxShadow = '0 0 0 2px white';
-      el.innerText = (index + 1).toString();
+    if (mapInitialized && map.current && optimizedRoute.length > 0) {
+      // Clear existing markers and route
+      const markers = document.querySelectorAll('.mapboxgl-marker');
+      markers.forEach(marker => marker.remove());
       
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([place.lng, place.lat])
-        .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<h3>${place.name}</h3>`))
-        .addTo(mapInstance);
-    });
-    
-    // Create a line between points
-    const coordinates = optimizedRoute.map(place => [place.lng, place.lat]);
-    
-    if (coordinates.length >= 2) {
-      mapInstance.addSource('route', {
+      // Add markers for each location
+      optimizedRoute.forEach((place, index) => {
+        // Create marker element
+        const el = document.createElement('div');
+        el.className = 'marker';
+        el.style.backgroundColor = index === 0 ? '#4338ca' : '#f97316';
+        el.style.width = '25px';
+        el.style.height = '25px';
+        el.style.borderRadius = '50%';
+        el.style.display = 'flex';
+        el.style.justifyContent = 'center';
+        el.style.alignItems = 'center';
+        el.style.color = 'white';
+        el.style.fontWeight = 'bold';
+        el.style.fontSize = '14px';
+        el.innerText = (index + 1).toString();
+        
+        // Add marker to map
+        new mapboxgl.Marker(el)
+          .setLngLat([place.lng, place.lat])
+          .setPopup(new mapboxgl.Popup({ offset: 25 })
+            .setHTML(`<h3>${place.name}</h3>`)
+          )
+          .addTo(map.current!);
+      });
+      
+      // Create route coordinates
+      const coordinates = optimizedRoute.map(place => [place.lng, place.lat]);
+      
+      // Check if route layer exists and remove it
+      if (map.current.getSource('route')) {
+        map.current.removeLayer('route');
+        map.current.removeSource('route');
+      }
+      
+      // Add route to map
+      map.current.addSource('route', {
         type: 'geojson',
         data: {
           type: 'Feature',
           properties: {},
           geometry: {
             type: 'LineString',
-            coordinates: coordinates
+            coordinates
           }
         }
       });
       
-      mapInstance.addLayer({
-        id: 'route-line',
+      map.current.addLayer({
+        id: 'route',
         type: 'line',
         source: 'route',
         layout: {
@@ -127,634 +155,405 @@ const SchoolCollegeTrips = () => {
         },
         paint: {
           'line-color': '#f97316',
-          'line-width': 4,
-          'line-dasharray': [2, 1]
+          'line-width': 4
         }
       });
       
-      // Fit bounds to include all markers
-      const bounds = coordinates.reduce((bounds, coord) => {
-        return bounds.extend(coord as [number, number]);
-      }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
-      
-      mapInstance.fitBounds(bounds, {
-        padding: 50
-      });
+      // Fit bounds to show all markers
+      const bounds = new mapboxgl.LngLatBounds();
+      coordinates.forEach(coord => bounds.extend(coord as [number, number]));
+      map.current.fitBounds(bounds, { padding: 50, maxZoom: 10 });
     }
-  }, [optimizedRoute, mapInstance]);
+  }, [optimizedRoute, mapInitialized]);
   
-  const handleDestinationToggle = (destination: (typeof destinations)[0]) => {
-    setSelectedDestinations(prev => {
-      if (prev.some(d => d.id === destination.id)) {
-        return prev.filter(d => d.id !== destination.id);
-      } else {
-        return [...prev, destination];
-      }
-    });
+  // Calculate estimated costs
+  const calculateCosts = () => {
+    const transportationCost = transportation === 'bus' 
+      ? 300 * studentCount
+      : transportation === 'train'
+        ? 200 * studentCount
+        : 500 * studentCount;
+    
+    const accommodationCost = 600 * studentCount * duration;
+    const foodCost = 200 * studentCount * duration;
+    const activityCost = 150 * studentCount;
+    
+    const totalCost = transportationCost + accommodationCost + foodCost + activityCost;
+    const perStudentCost = Math.round(totalCost / studentCount);
+    
+    return {
+      transportation: transportationCost,
+      accommodation: accommodationCost,
+      food: foodCost,
+      activities: activityCost,
+      total: totalCost,
+      perStudent: perStudentCost
+    };
   };
   
-  const calculateRoute = () => {
-    if (selectedDestinations.length < 2) {
-      toast({
-        title: "Not enough destinations",
-        description: "Please select at least two destinations to create a route",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    const places = destinationsToPlaces(selectedDestinations);
-    const route = calculateOptimalRoute(places);
-    setOptimizedRoute(route);
-    
-    toast({
-      title: "Route optimized",
-      description: `Optimal route calculated for ${route.length} destinations`,
-    });
-  };
-  
-  const calculateBudget = () => {
-    if (selectedDestinations.length === 0) {
-      toast({
-        title: "No destinations selected",
-        description: "Please select at least one destination",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Simple budget calculation
-    const transportCost = formData.transportType === 'bus' ? 4000 : 8000; // Per day
-    const accommodationCost = 800; // Per student per night
-    const foodCost = 350; // Per student per day
-    const entryCost = 200; // Per student per destination
-    
-    const totalTransport = transportCost * days;
-    const totalAccommodation = accommodationCost * numStudents * (days - 1);
-    const totalFood = foodCost * numStudents * days;
-    const totalEntry = entryCost * numStudents * selectedDestinations.length;
-    
-    const totalCost = totalTransport + totalAccommodation + totalFood + totalEntry;
-    const perStudentCost = Math.round(totalCost / numStudents);
-    
-    toast({
-      title: "Budget Estimate",
-      description: `Estimated total: ₹${totalCost}. Per student: ₹${perStudentCost}`,
-    });
-  };
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.institutionName || !formData.contactPerson || !formData.email || !formData.departureDate) {
-      toast({
-        title: "Missing information",
-        description: "Please fill in all required fields",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (selectedDestinations.length === 0) {
-      toast({
-        title: "No destinations selected",
-        description: "Please select at least one destination for your trip",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    toast({
-      title: "Trip Request Submitted",
-      description: "Our team will contact you shortly with a detailed itinerary proposal.",
-    });
-  };
+  const costs = calculateCosts();
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-travel">
       <Navbar />
       <main className="flex-grow">
-        {/* Banner Section */}
+        {/* Hero Section */}
         <div className="relative h-[40vh] min-h-[300px] w-full overflow-hidden">
-          <div className="absolute inset-0 bg-cover bg-center" 
-            style={{ 
-              backgroundImage: selectedTab === 'school' 
-                ? "url('https://images.unsplash.com/photo-1599687351724-dfa3c4ff81b1?ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8c2Nob29sJTIwdHJpcHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80')" 
-                : "url('https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8Y29sbGVnZSUyMHRyaXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80')" 
-            }}>
-            <div className="absolute inset-0 bg-gradient-to-b from-amber-900/70 to-amber-800/70"></div>
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80')" }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/70"></div>
           </div>
           
           <div className="container relative h-full mx-auto px-4 flex flex-col justify-center">
             <div className="max-w-2xl text-white">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                {selectedTab === 'school' ? 'School Trip Planning' : 'College Field Trip Planning'}
+                School & College Trip Planner
               </h1>
               <p className="text-lg md:text-xl mb-6 text-gray-100">
-                {selectedTab === 'school' 
-                  ? 'Organize educational and memorable trips for your students across Karnataka'
-                  : 'Create immersive field experiences for college departments and student groups'}
+                Plan the perfect educational journey with optimized routes, budget estimates, and interactive itineraries
               </p>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <School className="w-5 h-5 text-karnataka-orange" />
+                  <span>Educational Tours</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Bus className="w-5 h-5 text-karnataka-orange" />
+                  <span>Transportation Options</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="w-5 h-5 text-karnataka-orange" />
+                  <span>Budget Friendly</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         
         {/* Main Content */}
-        <div className="container mx-auto px-4 py-12">
-          <Tabs defaultValue="school" onValueChange={setSelectedTab}>
-            <div className="flex justify-center mb-8">
-              <TabsList className="grid w-full max-w-lg grid-cols-2">
-                <TabsTrigger value="school" className="text-lg py-3">
-                  <School className="mr-2 h-5 w-5" /> School Trips
-                </TabsTrigger>
-                <TabsTrigger value="college" className="text-lg py-3">
-                  <GraduationCap className="mr-2 h-5 w-5" /> College Trips
-                </TabsTrigger>
+        <section className="py-12 bg-gradient-travel">
+          <div className="container mx-auto px-4">
+            <Tabs defaultValue="planTrip" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="planTrip">Plan Your Trip</TabsTrigger>
+                <TabsTrigger value="itinerary">View Itinerary</TabsTrigger>
               </TabsList>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column - Form */}
-              <div className="lg:col-span-1">
-                <TabsContent value="school" className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>School Trip Request</CardTitle>
-                      <CardDescription>
-                        Let us plan an educational trip for your school students
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                          <label htmlFor="school-name" className="block text-sm font-medium">
-                            School Name
-                          </label>
-                          <Input
-                            id="school-name"
-                            value={formData.institutionName}
-                            onChange={(e) => setFormData({...formData, institutionName: e.target.value})}
-                            placeholder="Enter school name"
-                            required
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label htmlFor="contact-person" className="block text-sm font-medium">
-                            Contact Person
-                          </label>
-                          <Input
-                            id="contact-person"
-                            value={formData.contactPerson}
-                            onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
-                            placeholder="Teacher or administrator name"
-                            required
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label htmlFor="email" className="block text-sm font-medium">
-                              Email
-                            </label>
-                            <Input
-                              id="email"
-                              type="email"
-                              value={formData.email}
-                              onChange={(e) => setFormData({...formData, email: e.target.value})}
-                              placeholder="Email address"
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label htmlFor="phone" className="block text-sm font-medium">
-                              Phone
-                            </label>
-                            <Input
-                              id="phone"
-                              value={formData.phone}
-                              onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                              placeholder="Contact number"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label htmlFor="num-students" className="block text-sm font-medium">
-                              Number of Students
-                            </label>
-                            <Input
-                              id="num-students"
-                              type="number"
-                              min={10}
-                              max={200}
-                              value={numStudents}
-                              onChange={(e) => setNumStudents(parseInt(e.target.value))}
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label htmlFor="days" className="block text-sm font-medium">
-                              Number of Days
-                            </label>
-                            <Input
-                              id="days"
-                              type="number"
-                              min={1}
-                              max={10}
-                              value={days}
-                              onChange={(e) => setDays(parseInt(e.target.value))}
-                              required
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label htmlFor="departure-date" className="block text-sm font-medium">
-                            Preferred Departure Date
-                          </label>
-                          <Input
-                            id="departure-date"
-                            type="date"
-                            value={formData.departureDate}
-                            onChange={(e) => setFormData({...formData, departureDate: e.target.value})}
-                            required
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label htmlFor="transport" className="block text-sm font-medium">
-                            Preferred Transport
-                          </label>
-                          <Select 
-                            value={formData.transportType}
-                            onValueChange={(value) => setFormData({...formData, transportType: value})}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select transport type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="bus">School Bus</SelectItem>
-                              <SelectItem value="ac-bus">AC Bus</SelectItem>
-                              <SelectItem value="train">Train</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label htmlFor="notes" className="block text-sm font-medium">
-                            Additional Notes
-                          </label>
-                          <Textarea
-                            id="notes"
-                            placeholder="Any specific requirements, curriculum focuses, or special needs"
-                            value={formData.additionalNotes}
-                            onChange={(e) => setFormData({...formData, additionalNotes: e.target.value})}
-                            rows={4}
-                          />
-                        </div>
-                        
-                        <div className="pt-4">
-                          <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700">
-                            Submit Trip Request
-                          </Button>
-                        </div>
-                      </form>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="college" className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>College Field Trip Request</CardTitle>
-                      <CardDescription>
-                        Plan a specialized academic or recreational trip for your college
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                          <label htmlFor="college-name" className="block text-sm font-medium">
-                            College/University Name
-                          </label>
-                          <Input
-                            id="college-name"
-                            value={formData.institutionName}
-                            onChange={(e) => setFormData({...formData, institutionName: e.target.value})}
-                            placeholder="Enter institution name"
-                            required
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label htmlFor="department" className="block text-sm font-medium">
-                            Department/Faculty
-                          </label>
-                          <Input
-                            id="department"
-                            value={formData.contactPerson}
-                            onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
-                            placeholder="Department organizing the trip"
-                            required
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label htmlFor="email" className="block text-sm font-medium">
-                              Email
-                            </label>
-                            <Input
-                              id="email"
-                              type="email"
-                              value={formData.email}
-                              onChange={(e) => setFormData({...formData, email: e.target.value})}
-                              placeholder="Email address"
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label htmlFor="phone" className="block text-sm font-medium">
-                              Phone
-                            </label>
-                            <Input
-                              id="phone"
-                              value={formData.phone}
-                              onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                              placeholder="Contact number"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label htmlFor="num-students" className="block text-sm font-medium">
-                              Number of Participants
-                            </label>
-                            <Input
-                              id="num-students"
-                              type="number"
-                              min={10}
-                              max={200}
-                              value={numStudents}
-                              onChange={(e) => setNumStudents(parseInt(e.target.value))}
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label htmlFor="days" className="block text-sm font-medium">
-                              Number of Days
-                            </label>
-                            <Input
-                              id="days"
-                              type="number"
-                              min={1}
-                              max={10}
-                              value={days}
-                              onChange={(e) => setDays(parseInt(e.target.value))}
-                              required
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label htmlFor="departure-date" className="block text-sm font-medium">
-                            Preferred Departure Date
-                          </label>
-                          <Input
-                            id="departure-date"
-                            type="date"
-                            value={formData.departureDate}
-                            onChange={(e) => setFormData({...formData, departureDate: e.target.value})}
-                            required
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label htmlFor="transport" className="block text-sm font-medium">
-                            Preferred Transport
-                          </label>
-                          <Select 
-                            value={formData.transportType}
-                            onValueChange={(value) => setFormData({...formData, transportType: value})}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select transport type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="bus">Standard Bus</SelectItem>
-                              <SelectItem value="ac-bus">AC Bus</SelectItem>
-                              <SelectItem value="train">Train</SelectItem>
-                              <SelectItem value="custom">Custom Transport</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <label htmlFor="notes" className="block text-sm font-medium">
-                            Academic Requirements/Notes
-                          </label>
-                          <Textarea
-                            id="notes"
-                            placeholder="Specific academic goals, research requirements, or other needs"
-                            value={formData.additionalNotes}
-                            onChange={(e) => setFormData({...formData, additionalNotes: e.target.value})}
-                            rows={4}
-                          />
-                        </div>
-                        
-                        <div className="pt-4">
-                          <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700">
-                            Submit Trip Request
-                          </Button>
-                        </div>
-                      </form>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                {/* Action Buttons */}
-                <div className="space-y-3 mt-6">
-                  <Button 
-                    onClick={calculateRoute} 
-                    className="w-full bg-amber-600 hover:bg-amber-700 font-medium"
-                    disabled={selectedDestinations.length < 2}
-                  >
-                    <MapPin className="mr-2 h-4 w-4" />
-                    Optimize Route
-                  </Button>
-                  <Button 
-                    onClick={calculateBudget} 
-                    variant="outline"
-                    className="w-full border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white font-medium"
-                    disabled={selectedDestinations.length === 0}
-                  >
-                    <DollarSign className="mr-2 h-4 w-4" />
-                    Calculate Budget Estimate
-                  </Button>
-                </div>
-              </div>
               
-              {/* Center Column - Destinations */}
-              <div className="lg:col-span-1">
-                <Card className="h-full">
-                  <CardHeader>
-                    <CardTitle>Select Destinations</CardTitle>
-                    <CardDescription>
-                      Choose destinations to include in your itinerary
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
-                      {destinations.map(destination => (
-                        <div 
-                          key={destination.id}
-                          onClick={() => handleDestinationToggle(destination)}
-                          className={`p-3 rounded-lg flex items-center gap-3 cursor-pointer transition-all ${
-                            selectedDestinations.some(d => d.id === destination.id) 
-                              ? 'bg-amber-600 text-white scale-105 shadow-md' 
-                              : 'bg-gray-100 hover:bg-gray-200'
-                          }`}
+              <TabsContent value="planTrip" className="space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Trip Parameters */}
+                  <Card className="col-span-1">
+                    <CardHeader>
+                      <CardTitle>Trip Parameters</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="startLocation">Starting Point</Label>
+                        <Input 
+                          id="startLocation" 
+                          value={startLocation} 
+                          onChange={(e) => setStartLocation(e.target.value)} 
+                          placeholder="Enter starting location"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="tripType">Trip Type</Label>
+                        <Select value={tripType} onValueChange={setTripType}>
+                          <SelectTrigger id="tripType">
+                            <SelectValue placeholder="Select trip type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="educational">Educational Tour</SelectItem>
+                            <SelectItem value="cultural">Cultural Trip</SelectItem>
+                            <SelectItem value="recreational">Recreational Visit</SelectItem>
+                            <SelectItem value="industrial">Industrial Visit</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="transportation">Transportation Mode</Label>
+                        <Select value={transportation} onValueChange={setTransportation}>
+                          <SelectTrigger id="transportation">
+                            <SelectValue placeholder="Select transportation" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="bus">Bus</SelectItem>
+                            <SelectItem value="train">Train</SelectItem>
+                            <SelectItem value="car">Private Vehicles</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <Label htmlFor="students">Number of Students</Label>
+                          <span className="text-sm text-gray-500">{studentCount}</span>
+                        </div>
+                        <Slider 
+                          id="students"
+                          min={10} 
+                          max={100} 
+                          step={5} 
+                          value={[studentCount]} 
+                          onValueChange={(values) => setStudentCount(values[0])}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <Label htmlFor="duration">Trip Duration (Days)</Label>
+                          <span className="text-sm text-gray-500">{duration}</span>
+                        </div>
+                        <Slider 
+                          id="duration"
+                          min={1} 
+                          max={10} 
+                          step={1} 
+                          value={[duration]} 
+                          onValueChange={(values) => setDuration(values[0])}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <Label htmlFor="budget">Budget per Student (₹)</Label>
+                          <span className="text-sm text-gray-500">₹{budget}</span>
+                        </div>
+                        <Slider 
+                          id="budget"
+                          min={500} 
+                          max={5000} 
+                          step={100} 
+                          value={[budget]} 
+                          onValueChange={(values) => setBudget(values[0])}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Destination Selection */}
+                  <Card className="col-span-1 lg:col-span-2">
+                    <CardHeader>
+                      <CardTitle>Select Destinations</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        {allDestinations.map(destination => (
+                          <div 
+                            key={destination.id}
+                            className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-200 h-32 group ${
+                              selectedDestinations.includes(destination.id) 
+                                ? 'ring-2 ring-karnataka-orange ring-offset-2' 
+                                : 'hover:shadow-md'
+                            }`}
+                            onClick={() => toggleDestination(destination.id)}
+                          >
+                            <img 
+                              src={destination.image} 
+                              alt={destination.name} 
+                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20 flex flex-col justify-end p-3">
+                              <h3 className="text-white font-medium">{destination.name}</h3>
+                              <div className="flex items-center text-xs text-white/80">
+                                <MapPin className="w-3 h-3 mr-1" />
+                                <span>{destination.region}</span>
+                              </div>
+                            </div>
+                            {selectedDestinations.includes(destination.id) && (
+                              <div className="absolute top-2 right-2 bg-karnataka-orange text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                                {selectedDestinations.indexOf(destination.id) + 1}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="flex justify-end">
+                        <Button 
+                          onClick={calculateRoute} 
+                          disabled={selectedDestinations.length === 0}
+                          className="bg-karnataka-orange hover:bg-karnataka-terracotta text-white"
                         >
-                          {destination.image && (
-                            <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
-                              <img 
-                                src={destination.image} 
-                                alt={destination.name}
-                                className="w-full h-full object-cover" 
-                              />
-                            </div>
-                          )}
-                          <div className="flex-1">
-                            <h4 className="font-medium">{destination.name}</h4>
-                            <p className={`text-xs ${selectedDestinations.some(d => d.id === destination.id) ? 'text-white/80' : 'text-gray-500'}`}>
-                              {destination.region} • {destination.bestTimeToVisit}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {selectedDestinations.length > 0 && (
-                      <div className="mt-6 p-4 bg-amber-50 rounded-lg">
-                        <h4 className="font-medium mb-2 text-amber-800">Trip Statistics</h4>
-                        <div className="space-y-3 text-sm">
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-amber-600" />
-                            <span>{selectedDestinations.length} destinations selected</span>
-                          </div>
-                          {optimizedRoute.length > 0 && (
-                            <>
-                              <div className="flex items-center gap-2">
-                                <Bus className="h-4 w-4 text-amber-600" />
-                                <span>Total distance: {calculateTotalDistance(optimizedRoute)} km</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Clock className="h-4 w-4 text-amber-600" />
-                                <span>
-                                  Est. travel time: {estimateTotalTravelTime(optimizedRoute, 'bus')} hours by bus
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4 text-amber-600" />
-                                <span>
-                                  Recommended trip length: {Math.max(3, Math.ceil(selectedDestinations.length / 2))} days
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Users className="h-4 w-4 text-amber-600" />
-                                <span>
-                                  Approximate per-student cost: ₹{Math.round(2500 * days + (selectedDestinations.length * 200))}
-                                </span>
-                              </div>
-                            </>
-                          )}
-                        </div>
+                          Optimize Route
+                        </Button>
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Map View */}
+                  <Card className="col-span-1 lg:col-span-3">
+                    <CardHeader>
+                      <CardTitle>Trip Route Map</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="rounded-lg overflow-hidden h-[400px]" ref={mapContainer}></div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
               
-              {/* Right Column - Map */}
-              <div className="lg:col-span-1">
-                <Card className="h-full">
-                  <CardHeader>
-                    <CardTitle>Trip Route Map</CardTitle>
-                    <CardDescription>
-                      {optimizedRoute.length > 0 
-                        ? `Optimized route with ${optimizedRoute.length} destinations` 
-                        : "Select destinations to view the route"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div id="tripMap" className="w-full h-[500px] rounded-lg overflow-hidden bg-gray-100"></div>
-                    
-                    {optimizedRoute.length > 0 && (
-                      <div className="mt-4 space-y-2">
-                        <h4 className="font-medium">Route Order:</h4>
+              <TabsContent value="itinerary">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Itinerary Details */}
+                  <Card className="col-span-1 lg:col-span-2">
+                    <CardHeader>
+                      <CardTitle>Trip Itinerary</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {optimizedRoute.length > 0 ? (
+                        <div className="space-y-6">
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            <div className="bg-karnataka-cream px-3 py-1 rounded-full flex items-center text-sm">
+                              <Calendar className="w-4 h-4 mr-1 text-karnataka-orange" />
+                              <span>{duration} Days</span>
+                            </div>
+                            <div className="bg-karnataka-cream px-3 py-1 rounded-full flex items-center text-sm">
+                              <Users className="w-4 h-4 mr-1 text-karnataka-orange" />
+                              <span>{studentCount} Students</span>
+                            </div>
+                            <div className="bg-karnataka-cream px-3 py-1 rounded-full flex items-center text-sm">
+                              {transportation === 'bus' ? (
+                                <Bus className="w-4 h-4 mr-1 text-karnataka-orange" />
+                              ) : transportation === 'train' ? (
+                                <Clock className="w-4 h-4 mr-1 text-karnataka-orange" />
+                              ) : (
+                                <Car className="w-4 h-4 mr-1 text-karnataka-orange" />
+                              )}
+                              <span>{transportation === 'bus' ? 'Bus' : transportation === 'train' ? 'Train' : 'Private Vehicles'}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-4">
+                            {optimizedRoute.map((place, index) => (
+                              <div key={place.id} className="flex items-start">
+                                <div className="flex flex-col items-center mr-4">
+                                  <div className="w-8 h-8 rounded-full bg-karnataka-orange text-white flex items-center justify-center font-bold">
+                                    {index + 1}
+                                  </div>
+                                  {index < optimizedRoute.length - 1 && (
+                                    <div className="w-0.5 h-12 bg-gray-300 my-1"></div>
+                                  )}
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow-sm flex-grow">
+                                  <h3 className="font-bold text-lg">{place.name}</h3>
+                                  {index === 0 ? (
+                                    <p className="text-gray-600">Starting Point</p>
+                                  ) : index === optimizedRoute.length - 1 ? (
+                                    <p className="text-gray-600">Final Destination</p>
+                                  ) : (
+                                    <p className="text-gray-600">
+                                      Day {Math.min(index, duration)} - {index === 1 ? 'First Stop' : `Destination ${index}`}
+                                    </p>
+                                  )}
+                                  
+                                  {index > 0 && allDestinations.find(d => d.id === place.id)?.thingsToSee && (
+                                    <div className="mt-2">
+                                      <p className="text-sm font-medium text-gray-700">Things to See:</p>
+                                      <ul className="text-sm text-gray-600 mt-1 space-y-1">
+                                        {allDestinations.find(d => d.id === place.id)?.thingsToSee?.slice(0, 3).map((item, i) => (
+                                          <li key={i} className="flex items-start">
+                                            <span className="inline-block w-1 h-1 rounded-full bg-karnataka-orange mt-1.5 mr-2"></span>
+                                            {item}
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-center py-10">
+                          <p className="text-gray-500">No itinerary generated yet. Please select destinations and optimize route first.</p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Cost Breakdown */}
+                  <Card className="col-span-1">
+                    <CardHeader>
+                      <CardTitle>Cost Breakdown</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
                         <div className="space-y-2">
-                          {optimizedRoute.map((place, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                              <div className="bg-amber-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm shrink-0">
-                                {index + 1}
-                              </div>
-                              <span>{place.name}</span>
-                            </div>
-                          ))}
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Transportation</span>
+                            <span className="font-medium">₹{costs.transportation.toLocaleString()}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div 
+                              className="bg-karnataka-orange h-1.5 rounded-full" 
+                              style={{ width: `${(costs.transportation / costs.total) * 100}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Accommodation</span>
+                            <span className="font-medium">₹{costs.accommodation.toLocaleString()}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div 
+                              className="bg-karnataka-orange h-1.5 rounded-full" 
+                              style={{ width: `${(costs.accommodation / costs.total) * 100}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Food</span>
+                            <span className="font-medium">₹{costs.food.toLocaleString()}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div 
+                              className="bg-karnataka-orange h-1.5 rounded-full" 
+                              style={{ width: `${(costs.food / costs.total) * 100}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Activities</span>
+                            <span className="font-medium">₹{costs.activities.toLocaleString()}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div 
+                              className="bg-karnataka-orange h-1.5 rounded-full" 
+                              style={{ width: `${(costs.activities / costs.total) * 100}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        
+                        <div className="pt-4 border-t">
+                          <div className="flex justify-between items-center font-medium text-lg mb-2">
+                            <span>Total Cost</span>
+                            <span className="text-karnataka-blue">₹{costs.total.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm bg-karnataka-cream p-3 rounded-lg">
+                            <span>Cost per Student</span>
+                            <span className="font-bold text-karnataka-orange">₹{costs.perStudent.toLocaleString()}</span>
+                          </div>
                         </div>
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </Tabs>
-          
-          {/* FAQ Section */}
-          <div className="mt-16">
-            <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">How far in advance should we book?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>We recommend booking at least 2-3 months in advance for school trips and 1-2 months for college trips, especially during peak season (October-February).</p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Do you provide teachers/professors with complimentary places?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Yes, we provide one complimentary place for every 15 students for teachers/professors and staff accompanying the group.</p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Can you arrange special educational activities?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Absolutely! We can arrange curriculum-focused workshops, expert-guided tours, and interactive experiences tailored to your academic requirements.</p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">What safety measures do you have in place?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>We maintain strict safety protocols including verified accommodations, certified transportation, 24/7 emergency support, and experienced guides trained in first aid.</p>
-                </CardContent>
-              </Card>
-            </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>

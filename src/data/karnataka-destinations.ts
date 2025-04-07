@@ -1,4 +1,3 @@
-
 export interface Destination {
   id: string;
   name: string;
@@ -12,6 +11,7 @@ export interface Destination {
     lat: number;
     lng: number;
   };
+  thingsToSee?: string[];
 }
 
 export const destinations: Destination[] = [
@@ -240,3 +240,142 @@ export const destinations: Destination[] = [
     }
   }
 ];
+
+export const additionalDestinations: Destination[] = [
+  {
+    id: "dandeli",
+    name: "Dandeli",
+    region: "Western Ghats",
+    category: ["Adventure", "Wildlife", "Nature"],
+    description: "Dandeli is an adventure hub nestled in the Western Ghats, famous for white water rafting on the Kali River. The dense forests of Dandeli Wildlife Sanctuary are home to black panthers, tigers, elephants, and over 300 bird species, making it a paradise for wildlife enthusiasts. Adventure seekers can enjoy activities like kayaking, natural jacuzzi baths, and night camping. The area also features beautiful spots like Syntheri Rocks, Kavala Caves, and the scenic Sathodi Falls.",
+    shortDescription: "Adventure paradise with white water rafting and rich wildlife",
+    bestTimeToVisit: "October to May",
+    image: "https://images.unsplash.com/photo-1469041797191-50ace28483c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    location: {
+      lat: 15.2493,
+      lng: 74.6198
+    },
+    thingsToSee: [
+      "White Water Rafting on Kali River",
+      "Dandeli Wildlife Sanctuary",
+      "Syntheri Rocks",
+      "Kavala Caves",
+      "Sathodi Falls"
+    ]
+  },
+  {
+    id: "nandi-hills",
+    name: "Nandi Hills",
+    region: "South Karnataka",
+    category: ["Hill Station", "Sunrise", "History"],
+    description: "Nandi Hills is a picturesque hill station located near Bangalore, famous for its breathtaking sunrise views. The ancient Nandi Temple atop the hill gives it its name. Historical significance comes from Tipu Sultan's summer retreat and fort. Visitors can enjoy paragliding, cycling, and trekking, or simply soak in the panoramic views of lush greenery and mist-covered landscapes. The hills are also home to a variety of bird species, making it a favorite spot for birdwatchers.",
+    shortDescription: "Scenic hill station near Bangalore famous for spectacular sunrises",
+    bestTimeToVisit: "Year-round (October to June is ideal)",
+    image: "https://images.unsplash.com/photo-1482938289607-e9573fc25ebb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    location: {
+      lat: 13.3702,
+      lng: 77.6835
+    },
+    thingsToSee: [
+      "Sunrise Point",
+      "Tipu's Drop",
+      "Nandi Temple",
+      "Tipu's Summer Residence",
+      "Brahmashram"
+    ]
+  },
+  {
+    id: "agumbe",
+    name: "Agumbe",
+    region: "Western Ghats",
+    category: ["Rainforest", "Nature", "Scenic"],
+    description: "Known as the 'Cherrapunji of the South' for its high rainfall, Agumbe is a beautiful village in the Western Ghats famous for its rainforest ecosystem and spectacular sunsets. It's a biodiversity hotspot known for the king cobra and hosts the Agumbe Rainforest Research Station. The lush green landscapes feature numerous waterfalls including Onake Abbi, Barkana, and Jogigundi. The area also served as the setting for the famous TV series 'Malgudi Days', adding cultural significance to its natural beauty.",
+    shortDescription: "Rainforest village with spectacular sunsets and rich biodiversity",
+    bestTimeToVisit: "November to February",
+    image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    location: {
+      lat: 13.5009,
+      lng: 75.0954
+    },
+    thingsToSee: [
+      "Sunset View Point",
+      "Onake Abbi Falls",
+      "Barkana Falls",
+      "Jogigundi Falls",
+      "Agumbe Rainforest Research Station"
+    ]
+  },
+  {
+    id: "mangalore",
+    name: "Mangalore",
+    region: "Coastal Karnataka",
+    category: ["Beach", "Culture", "Cuisine"],
+    description: "Mangalore, officially known as Mangaluru, is a major port city on the Arabian Sea. It's known for its distinct culture, beautiful beaches, and diverse cuisine. The city features a blend of temples, churches, and mosques reflecting its cultural diversity. Beaches like Panambur, Tannirbhavi, and Sasihithlu offer scenic coastal experiences. Mangalore is famous for its seafood dishes and unique Mangalorean cuisine, including Kori Rotti and Neer Dosa. The city also serves as a gateway to many tourist destinations in Karnataka.",
+    shortDescription: "Vibrant port city with beautiful beaches and unique cuisine",
+    bestTimeToVisit: "October to March",
+    image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    location: {
+      lat: 12.9141,
+      lng: 74.8560
+    },
+    thingsToSee: [
+      "Panambur Beach",
+      "Tannirbhavi Beach",
+      "Kadri Manjunath Temple",
+      "St. Aloysius Chapel",
+      "Sultan Battery"
+    ]
+  },
+  {
+    id: "bidar",
+    name: "Bidar",
+    region: "North Karnataka",
+    category: ["Heritage", "History", "Architecture"],
+    description: "Bidar is a historic city known for its impressive Bidar Fort and unique Bidriware metalcraft. The fort, built in the 15th century, features Persian, Turkish, and Indian architectural influences. The city is home to the ancient Mahmud Gawan Madrasa, an impressive Islamic learning center, and numerous tombs of Bahmani and Barid Shahi rulers. The black soil of Bidar is key to the famous Bidriware, a metal handicraft inlaid with silver. The city offers a glimpse into medieval Indian history with its well-preserved monuments.",
+    shortDescription: "Historic city famous for Bidar Fort and Bidriware metalcraft",
+    bestTimeToVisit: "October to March",
+    image: "https://images.unsplash.com/photo-1527576539890-dfa815648363?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    location: {
+      lat: 17.9104,
+      lng: 77.5199
+    },
+    thingsToSee: [
+      "Bidar Fort",
+      "Mahmud Gawan Madrasa",
+      "Bahmani Tombs",
+      "Chaubara",
+      "Bidriware Artisans"
+    ]
+  }
+];
+
+export const allDestinations = [...destinations, ...additionalDestinations];
+
+export function getDestinationById(id: string): Destination | undefined {
+  return allDestinations.find(destination => destination.id === id);
+}
+
+export function getNearbyDestinations(id: string, limit: number = 3): Destination[] {
+  const destination = getDestinationById(id);
+  if (!destination) return [];
+  
+  let nearby = allDestinations.filter(d => 
+    d.id !== id && (
+      d.region === destination.region || 
+      d.category.some(c => destination.category.includes(c))
+    )
+  );
+  
+  if (nearby.length < limit) {
+    const otherDestinations = allDestinations.filter(d => 
+      d.id !== id && 
+      !nearby.some(nd => nd.id === d.id)
+    );
+    
+    nearby = [...nearby, ...otherDestinations];
+  }
+  
+  return nearby
+    .sort(() => 0.5 - Math.random())
+    .slice(0, limit);
+}

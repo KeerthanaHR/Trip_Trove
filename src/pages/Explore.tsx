@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -6,7 +5,7 @@ import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { destinations, Destination } from '@/data/karnataka-destinations';
+import { allDestinations, Destination } from '@/data/karnataka-destinations';
 import { MapPin, Filter, Search, ArrowRight, Star, Map, Globe } from 'lucide-react';
 
 const Explore = () => {
@@ -16,12 +15,12 @@ const Explore = () => {
   
   // Extract all unique categories for filtering
   const allCategories = Array.from(
-    new Set(destinations.flatMap(destination => destination.category))
+    new Set(allDestinations.flatMap(destination => destination.category))
   ).sort();
   
   // Extract all unique regions for filtering
   const allRegions = Array.from(
-    new Set(destinations.map(destination => destination.region))
+    new Set(allDestinations.map(destination => destination.region))
   ).sort();
   
   // Handle category selection/deselection
@@ -43,7 +42,7 @@ const Explore = () => {
   };
   
   // Filter destinations based on search query, selected categories, and regions
-  const filteredDestinations = destinations.filter(destination => {
+  const filteredDestinations = allDestinations.filter(destination => {
     const matchesSearch = destination.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          destination.description.toLowerCase().includes(searchQuery.toLowerCase());
     
